@@ -5,7 +5,7 @@ pipeline {
         stage('Pre Build') {
             steps {
                 sh 'ls -ltr'
-                // sh 'git branch "main" "https://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@github.com/UjjwalBudha/portfolio.git"'
+                 sh 'git branch "main" "https://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@github.com/UjjwalBudha/portfolio.git"'
             }
         }
         stage ('Build') {
