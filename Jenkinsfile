@@ -14,7 +14,7 @@ pipeline {
             sh 'touch test.txt'
             sh 'ls -ltr'
             sh 'whoami'
-            sh 'sudo docker ps'
+            
             }
         }
     }
