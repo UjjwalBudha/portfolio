@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>AWS Account Security Tools</title>
+  <meta content="Learn about AWS IAM, AWS Secrets Manager, and Amazon Cognito for securing your AWS account and managing access control." name="description">
+  <meta content="AWS, IAM, Secrets Manager, Amazon Cognito, Security, Access Control" name="keywords">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Raleway", sans-serif;
+      background-color: #040404;
+      color: #fff;
+      line-height: 1.8;
+    }
+
+    /* Header Styles */
+    header {
+      position: relative;
+      text-align: center;
+      color: #fff;
+    }
+
+    header .banner {
+      width: 100%;
+      height: 300px;
+      background: url('assets/img/banner.jpg') no-repeat center center;
+      background-size: cover;
+    }
+
+    header .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    header .blog-date {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Main Content Styling */
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    main h2 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #18d26e;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    main h3 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #18d26e;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    main p,
+    main ul {
+      font-size: 16px;
+      color: #ccc;
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    main ul li {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    main pre {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 5px;
+      font-family: "Courier New", monospace;
+      color: #18d26e;
+      overflow-x: auto;
+      text-align: left;
+    }
+
+    /* Image Styling */
+    .image-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Blog Header -->
+  <header>
+    <div class="banner"></div>
+    <div class="content">
+      <h1>AWS Account Security Tools</h1>
+      <p class="blog-date">11th June 2024</p>
+    </div>
+  </header>
+
+  <!-- Blog Content -->
+  <main>
+    <section>
+      <h2>Overview</h2>
+      <p>
+        Securing your AWS account is critical to protecting your resources and data. AWS provides several tools to help you manage access control, secrets, and user authentication. This blog covers three key AWS security tools: <strong>AWS Identity and Access Management (IAM)</strong>, <strong>AWS Secrets Manager</strong>, and <strong>Amazon Cognito</strong>.
+      </p>
+    </section>
+
+    <section>
+      <h2>AWS Identity and Access Management (IAM)</h2>
+      <p>
+        AWS IAM allows you to manage access to AWS services and resources securely. You can create and manage users, groups, roles, and policies to define permissions and control access.
+      </p>
+
+      <h3>IAM Users</h3>
+      <p>
+        IAM users are individual entities (people or applications) that can access AWS services. Each user has unique security credentials and permissions.
+      </p>
+
+      <h3>IAM Groups</h3>
+      <p>
+        IAM groups are collections of IAM users. You can assign permissions to a group, and all users in the group inherit those permissions.
+      </p>
+
+      <h3>IAM Roles and Policies</h3>
+      <p>
+        IAM roles are sets of permissions that define what actions can be performed on AWS resources. Policies are JSON documents that specify the permissions for roles, users, or groups.
+      </p>
+
+      <div class="image-container">
+        <img src="src/blog3/iam_role.png" alt="IAM Role and Policy">
+      </div>
+
+      <h3>Use Cases</h3>
+      <ul>
+        <li><strong>User Management:</strong> Create and manage users with unique credentials and permissions.</li>
+        <li><strong>Role-based Access Control:</strong> Assign roles to users or services for temporary access to resources.</li>
+        <li><strong>User Provisioning and Onboarding:</strong> Streamline the process of granting new users access to AWS resources.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>AWS Secrets Manager</h2>
+      <p>
+        AWS Secrets Manager helps you securely store, manage, and retrieve secrets such as database credentials, API keys, and other sensitive information.
+      </p>
+
+      <div class="image-container">
+        <img src="src/blog3/secrets_manager.png" alt="AWS Secrets Manager">
+      </div>
+
+      <h3>Key Features</h3>
+      <ul>
+        <li>Encrypts secrets at rest using AWS Key Management Service (KMS).</li>
+        <li>Automates secret rotation to enhance security.</li>
+        <li>Provides secure access to secrets via APIs.</li>
+      </ul>
+
+      <h3>Use Cases</h3>
+      <ul>
+        <li><strong>Managing Database Credentials:</strong> Securely store and rotate credentials for databases like Amazon RDS and Redshift.</li>
+        <li><strong>API Key Management:</strong> Store and manage API keys securely, with automatic rotation.</li>
+      </ul>
+
+      <h3>Example Scenario</h3>
+      <p>
+        Suppose you have a website that connects to a database. Instead of hardcoding the database password in your application, you can:
+      </p>
+      <ol>
+        <li>Store the password in AWS Secrets Manager.</li>
+        <li>Grant your application permission to fetch the password from Secrets Manager.</li>
+        <li>Enable automatic password rotation without changing your application code.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Amazon Cognito</h2>
+      <p>
+        Amazon Cognito provides user authentication and access control for web and mobile applications. It supports user sign-up, sign-in, and access to AWS resources.
+      </p>
+
+      <div class="image-container">
+        <img src="src/blog3/cognito.png" alt="Amazon Cognito">
+      </div>
+
+      <h3>User Pools</h3>
+      <p>
+        User pools are user directories that manage sign-up and sign-in functionality. They allow you to create and manage users for your applications.
+      </p>
+
+      <div class="image-container">
+        <img src="src/blog3/user_pool.png" alt="Cognito User Pool">
+      </div>
+
+      <h3>Identity Pools</h3>
+      <p>
+        Identity pools enable you to create unique identities for users and grant them temporary access to AWS resources.
+      </p>
+
+      <div class="image-container">
+        <img src="src/blog3/identity_pool.png" alt="Cognito Identity Pool">
+      </div>
+
+      <h3>Use Cases</h3>
+      <ul>
+        <li><strong>User Authentication:</strong> Add sign-up and sign-in functionality to your app.</li>
+        <li><strong>Access Control:</strong> Grant users access to AWS resources like S3 buckets.</li>
+        <li><strong>Temporary Credentials:</strong> Generate temporary AWS credentials for unauthenticated users.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Conclusion</h2>
+      <p>
+        AWS provides powerful tools like IAM, Secrets Manager, and Cognito to help you secure your account, manage access control, and protect sensitive information. By leveraging these tools, you can build a robust security framework for your AWS environment.
+      </p>
+    </section>
+
+    <section>
+      <h2>Reference</h2>
+      <ul>
+        <li><a href="https://aws.amazon.com/iam/" target="_blank">AWS IAM Documentation</a></li>
+        <li><a href="https://aws.amazon.com/secrets-manager/" target="_blank">AWS Secrets Manager Documentation</a></li>
+        <li><a href="https://aws.amazon.com/cognito/" target="_blank">Amazon Cognito Documentation</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
