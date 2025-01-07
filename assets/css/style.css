@@ -960,3 +960,63 @@ section .container {
   left: 10px;
   margin-left: 5px;
 }
+
+/* Blog Section Styles */
+.blogs .blog-card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 8px;
+  transition: ease-in-out 0.3s;
+  margin-bottom: 20px;
+  height: 400px; /* Set a fixed height for all cards */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.blogs .blog-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.blogs .blog-card img {
+  width: 100%; /* Ensure the image takes up the full width of its container */
+  height: 200px; /* Set a fixed height for images */
+  object-fit: contain; /* Display the actual image without cropping */
+  border-radius: 8px; /* Optional: Add rounded corners for a better look */
+}
+
+.blogs .blog-card h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 15px 0 10px 0;
+  color: #fff;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Add ... for overflow text */
+}
+
+.blogs .blog-card h4 a {
+  color: #fff;
+  transition: 0.3s;
+}
+
+.blogs .blog-card h4 a:hover {
+  color: #18d26e;
+}
+
+.blogs .blog-card p.blog-date {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+
+.blogs .blog-card p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit text to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ... for overflow text */
+}

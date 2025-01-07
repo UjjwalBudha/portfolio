@@ -131,7 +131,7 @@
         Start by logging into your AWS Management Console and navigating to the EC2 dashboard. Choose the Ubuntu AMI for a secure and flexible environment. Select the <code>t2.micro</code> instance type, which is suitable for low-cost and lightweight applications.
       </p>
       <div class="image-container">
-        <img src="src/ec2_homepage.png" alt="EC2 Instance Creation">
+        <img src="src/blog1/ec2_homepage.png" alt="EC2 Instance Creation">
       </div>
       <p>
         Once you’ve chosen the AMI and instance type, proceed to configure instance details. Add meaningful tags to identify your instance. For example:
@@ -141,7 +141,7 @@
         <li>Key: <code>Environment</code>, Value: <code>Production</code></li>
       </ul>
       <div class="image-container">
-        <img src="src/ec2_tags.png" alt="Tagging EC2 Instance">
+        <img src="src/blog1/ec2_tags.png" alt="Tagging EC2 Instance">
       </div>
     </section>
 
@@ -155,7 +155,7 @@
         <li>Allow HTTP (port 80) for web traffic</li>
       </ul>
       <div class="image-container">
-        <img src="src/ec2_sg.png" alt="Security Group Configuration">
+        <img src="src/blog1/ec2_sg.png" alt="Security Group Configuration">
       </div>
     </section>
 
@@ -185,7 +185,7 @@ sudo systemctl enable apache2
       </code></pre>
       <p>After the instance starts, verify its status in the AWS Management Console:</p>
       <div class="image-container">
-        <img src="src/ec2.png" alt="EC2 Running State">
+        <img src="src/blog1/ec2.png" alt="EC2 Running State">
       </div>
     </section>
 
@@ -195,7 +195,7 @@ sudo systemctl enable apache2
         Open a browser and navigate to your instance's public IP address. You should see the default Apache page, confirming that the server is running:
       </p>
       <div class="image-container">
-        <img src="src/ec2_nginx.png" alt="Apache Running">
+        <img src="src/blog1/ec2_nginx.png" alt="Apache Running">
       </div>
     </section>
 
@@ -205,7 +205,7 @@ sudo systemctl enable apache2
         Systems Manager (SSM) allows you to manage your EC2 instances without requiring SSH. Attach the <code>AmazonEC2RoleforSSM</code> to your instance, enabling secure remote access:
       </p>
       <div class="image-container">
-        <img src="src/ec2_ssm.png" alt="SSM Role Attachment">
+        <img src="src/blog1/ec2_ssm.png" alt="SSM Role Attachment">
       </div>
       <p>
         Use the following command to start an SSM session:
