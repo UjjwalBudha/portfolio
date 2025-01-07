@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>EC2 Instance Creation and Configuration</title>
+  <meta content="Detailed steps to create and configure an EC2 instance with Apache installation, SSM setup, and user data implementation." name="description">
+  <meta content="EC2, AWS, Apache, SSM, User Data, Security Groups" name="keywords">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Raleway", sans-serif;
+      background-color: #040404;
+      color: #fff;
+      line-height: 1.8;
+    }
+
+    /* Header Styles */
+    header {
+      position: relative;
+      text-align: center;
+      color: #fff;
+    }
+
+    header .banner {
+      width: 100%;
+      height: 300px;
+      background: url('assets/img/banner.jpg') no-repeat center center;
+      background-size: cover;
+    }
+
+    header .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    header .blog-date {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Main Content Styling */
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    main h2 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #18d26e;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    main p,
+    main ul {
+      font-size: 16px;
+      color: #ccc;
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    main ul li {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    main pre {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 5px;
+      font-family: "Courier New", monospace;
+      color: #18d26e;
+      overflow-x: auto;
+      text-align: left;
+    }
+
+    /* Image Styling */
+    .image-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Blog Header -->
+  <header>
+    <div class="banner"></div>
+    <div class="content">
+      <h1>EC2 Instance Creation and Configuration</h1>
+      <p class="blog-date">10th February 2024</p>
+    </div>
+  </header>
+
+  <!-- Blog Content -->
+  <main>
+    <section>
+      <h2>Introduction</h2>
+      <p>
+        Creating an AWS EC2 instance is a crucial skill for anyone looking to manage cloud infrastructure. This guide will walk you through the step-by-step process of creating and configuring an EC2 instance. By the end, you’ll have a fully operational server with Apache installed and secured using best practices.
+      </p>
+      <p>
+        Let’s dive in and learn how to leverage AWS EC2 to deploy and manage scalable applications efficiently.
+      </p>
+    </section>
+
+    <section>
+      <h2>Step 1: EC2 Instance Creation</h2>
+      <p>
+        Start by logging into your AWS Management Console and navigating to the EC2 dashboard. Choose the Ubuntu AMI for a secure and flexible environment. Select the <code>t2.micro</code> instance type, which is suitable for low-cost and lightweight applications.
+      </p>
+      <div class="image-container">
+        <img src="src/ec2_homepage.png" alt="EC2 Instance Creation">
+      </div>
+      <p>
+        Once you’ve chosen the AMI and instance type, proceed to configure instance details. Add meaningful tags to identify your instance. For example:
+      </p>
+      <ul>
+        <li>Key: <code>Name</code>, Value: <code>My-EC2-Instance</code></li>
+        <li>Key: <code>Environment</code>, Value: <code>Production</code></li>
+      </ul>
+      <div class="image-container">
+        <img src="src/ec2_tags.png" alt="Tagging EC2 Instance">
+      </div>
+    </section>
+
+    <section>
+      <h2>Step 2: Attaching Security Groups</h2>
+      <p>
+        Security groups are essential for controlling inbound and outbound traffic to your EC2 instance. Create a security group with the following rules:
+      </p>
+      <ul>
+        <li>Allow SSH (port 22) from your IP address</li>
+        <li>Allow HTTP (port 80) for web traffic</li>
+      </ul>
+      <div class="image-container">
+        <img src="src/ec2_sg.png" alt="Security Group Configuration">
+      </div>
+    </section>
+
+    <section>
+      <h2>Step 3: Setting Up SSH Key Pair</h2>
+      <p>
+        Generate or use an existing SSH key pair to connect securely to your instance. Ensure the key permissions are correctly set:
+      </p>
+      <pre><code>chmod 400 secretkey.pem</code></pre>
+      <p>
+        Once your instance is running, connect to it using the public IP address:
+      </p>
+      <pre><code>ssh -i "secretkey.pem" ubuntu@<instance-public-ip></code></pre>
+    </section>
+
+    <section>
+      <h2>Step 4: User Data for Apache Installation</h2>
+      <p>
+        Use the following user data script to install and configure Apache during instance launch. This script ensures the web server is up and running as soon as the instance is initialized:
+      </p>
+      <pre><code>
+#!/bin/bash
+sudo apt update -y
+sudo apt install apache2 -y
+sudo systemctl start apache2
+sudo systemctl enable apache2
+      </code></pre>
+      <p>After the instance starts, verify its status in the AWS Management Console:</p>
+      <div class="image-container">
+        <img src="src/ec2.png" alt="EC2 Running State">
+      </div>
+    </section>
+
+    <section>
+      <h2>Step 5: Verifying the Apache Server</h2>
+      <p>
+        Open a browser and navigate to your instance's public IP address. You should see the default Apache page, confirming that the server is running:
+      </p>
+      <div class="image-container">
+        <img src="src/ec2_nginx.png" alt="Apache Running">
+      </div>
+    </section>
+
+    <section>
+      <h2>Step 6: Setting Up SSM</h2>
+      <p>
+        Systems Manager (SSM) allows you to manage your EC2 instances without requiring SSH. Attach the <code>AmazonEC2RoleforSSM</code> to your instance, enabling secure remote access:
+      </p>
+      <div class="image-container">
+        <img src="src/ec2_ssm.png" alt="SSM Role Attachment">
+      </div>
+      <p>
+        Use the following command to start an SSM session:
+      </p>
+      <pre><code>aws ssm start-session --target <instance-id> --region us-east-1</code></pre>
+    </section>
+
+    <section>
+      <h2>Conclusion</h2>
+      <p>
+        Congratulations! You have successfully created and configured an EC2 instance, installed Apache, and secured it using SSH and SSM. With these skills, you can deploy scalable and secure applications on AWS. Keep exploring to master more advanced AWS features.
+      </p>
+    </section>
+  </main>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
