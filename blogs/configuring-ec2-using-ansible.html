@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Configuring EC2 Instance using Ansible</title>
+  <meta content="A comprehensive guide on configuring an AWS EC2 instance using Ansible, including installing Nginx/Apache, deploying applications, and leveraging dynamic inventories." name="description">
+  <meta content="EC2, Ansible, AWS, Nginx, Node.js, Apache, Configuration" name="keywords">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Raleway", sans-serif;
+      background-color: #040404;
+      color: #fff;
+      line-height: 1.8;
+    }
+
+    header {
+      position: relative;
+      text-align: center;
+      color: #fff;
+    }
+
+    header .banner {
+      width: 100%;
+      height: 300px;
+      background: url('assets/img/banner.jpg') no-repeat center center;
+      background-size: cover;
+    }
+
+    header .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    header .blog-date {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    main h2 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #18d26e;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    main p,
+    main ul {
+      font-size: 16px;
+      color: #ccc;
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    main ul li {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    main pre {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 5px;
+      font-family: "Courier New", monospace;
+      color: #18d26e;
+      overflow-x: auto;
+      text-align: left;
+    }
+
+    .image-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="banner"></div>
+    <div class="content">
+      <h1>Configuring EC2 Instance using Ansible</h1>
+      <p class="blog-date">Last updated: May 23, 2024</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Introduction</h2>
+      <p>
+        This guide provides detailed steps to configure an AWS EC2 instance using Ansible. It covers dynamic inventories, installing web servers (Nginx/Apache), deploying Node.js/Django applications, and using best practices.
+      </p>
+    </section>
+
+    <section>
+      <h2>Dynamic Inventory</h2>
+      <p>A dynamic inventory dynamically fetches host details during runtime. Use the following configuration for AWS EC2:</p>
+      <pre><code>
+plugin: aws_ec2
+regions:
+  - us-east-1
+filters:
+  instance-state-name: running
+  "tag:owner": ujwal.budha
+hostnames:
+  - instance-id
+      </code></pre>
+      <p>Enable the plugin in <code>ansible.cfg</code>:</p>
+      <pre><code>[inventory]
+enable_plugins = aws_ec2</code></pre>
+    </section>
+
+    <section>
+      <h2>Ansible File Structure</h2>
+      <p>Below is the file structure used for this setup:</p>
+      <pre><code>
+ansible/
+├── ansible.cfg
+├── aws_ec2.yml
+├── playbook.yml
+└── roles/
+    ├── nginx/
+    │   ├── handlers/
+    │   │   └── main.yml
+    │   └── tasks/
+    │       └── main.yml
+    └── node/
+        ├── tasks/
+        │   └── main.yml
+        └── vars/
+            └── main.yml
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Playbook Configuration</h2>
+      <p>The <code>playbook.yml</code> file defines the playbook execution:</p>
+      <pre><code>
+---
+- hosts: aws_ec2
+  become: true
+  gather_facts: true
+  roles:
+    - node
+    - nginx
+  vars:
+    ansible_connection: aws_ssm
+    ansible_aws_ssm_bucket_name: sujata-static-website-one
+    ansible_aws_ssm_profile: default
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Roles</h2>
+      <h3>Node Role</h3>
+      <pre><code>
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+- name: Install npm, nodejs
+  ansible.builtin.apt:
+    name:
+      - npm
+      - nodejs
+    state: latest
+      </code></pre>
+
+      <h3>Nginx Role</h3>
+      <pre><code>
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: latest
+- name: Configure Nginx
+  ansible.builtin.template:
+    src: nginx.j2
+    dest: /etc/nginx/sites-enabled/default
+  notify: restart nginx
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Template for Reverse Proxy</h2>
+      <pre><code>
+server {
+	listen 80 default_server;
+	server_name _;
+	location / {
+		proxy_pass http://localhost:3000;
+	}
+}
+      </code></pre>
+    </section>
+
+    <section>
+      <h2>Running the Playbook</h2>
+      <p>Execute the playbook with the following command:</p>
+      <pre><code>ansible-playbook -i aws_ec2.yml playbook.yml</code></pre>
+      <div class="image-container">
+        <img src="src/blog4/ansible_run.png" alt="DynamoDB Table Creation">
+      </div>
+    </section>
+
+    <section>
+        <h2>Hosted Website</h2>
+        <p>and finally to check the output we will visit the public ip of our instance </p>
+        <div class="image-container">
+          <img src="src/blog4/website_host.png" alt="DynamoDB Table Creation">
+        </div>
+      </section>
+
+      <section>
+        <h2>Reference</h2>
+        <ul>
+          <li><a href="https://docs.ansible.com/" target="_blank">Ansible Documentation</a></li>
+          <li><a href="https://medium.com/cloudnloud/how-to-use-handlers-in-ansible-9e62e17c3b61#:~:text=Handlers%20are%20commonly%20used%20in,see%20the%20changes%20take%20effect." target="_blank">How to use handlers in ansible</a></li>
+          <li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-variables-in-ansible-playbooks" target="_blank">how to use variables in ansible</a></li>
+        </ul>
+      </section>
+  </main>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
