@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Optimizing Web Performance with Amazon CloudFront</title>
-  <meta content="A comprehensive guide to understanding and utilizing Amazon CloudFront to enhance web performance and content delivery." name="description">
+  <meta
+    content="A comprehensive guide to understanding and utilizing Amazon CloudFront to enhance web performance and content delivery."
+    name="description">
   <meta content="Amazon CloudFront, CDN, Web Performance, AWS, Latency Reduction, Content Delivery" name="keywords">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
@@ -118,14 +120,20 @@
     <section>
       <h2>Introduction</h2>
       <p>
-        Delivering an outstanding user experience in the fast-paced world of digital services requires dependable and quick web performance. Whether it's an e-commerce platform, a media streaming service, or any other web application, performance plays a critical role in customer satisfaction and retention. Amazon CloudFront, a robust Content Delivery Network (CDN) by AWS, is a powerful solution to optimize web performance by reducing latency and accelerating content delivery globally.
+        Delivering an outstanding user experience in the fast-paced world of digital services requires dependable and
+        quick web performance. Whether it's an e-commerce platform, a media streaming service, or any other web
+        application, performance plays a critical role in customer satisfaction and retention. Amazon CloudFront, a
+        robust Content Delivery Network (CDN) by AWS, is a powerful solution to optimize web performance by reducing
+        latency and accelerating content delivery globally.
       </p>
     </section>
 
     <section>
       <h2>What is Amazon CloudFront?</h2>
       <p>
-        Amazon CloudFront is a global CDN service designed to deliver web content such as HTML, CSS, JavaScript, images, and videos with low latency and high transfer speeds. By caching content at edge locations worldwide, CloudFront ensures faster delivery by serving content closer to users, significantly enhancing web performance.
+        Amazon CloudFront is a global CDN service designed to deliver web content such as HTML, CSS, JavaScript, images,
+        and videos with low latency and high transfer speeds. By caching content at edge locations worldwide, CloudFront
+        ensures faster delivery by serving content closer to users, significantly enhancing web performance.
       </p>
     </section>
 
@@ -133,9 +141,12 @@
       <h2>Key Benefits of Amazon CloudFront</h2>
       <ul>
         <li><strong>Reduced Latency:</strong> Caches content at edge locations to minimize round-trip times.</li>
-        <li><strong>Faster Content Delivery:</strong> Frequently accessed content is served efficiently from closer locations.</li>
-        <li><strong>Scalability & Reliability:</strong> Automatically scales to handle traffic spikes with consistent performance.</li>
-        <li><strong>Enhanced Security:</strong> Supports SSL/TLS, integrates with AWS Shield and WAF for secure transmissions.</li>
+        <li><strong>Faster Content Delivery:</strong> Frequently accessed content is served efficiently from closer
+          locations.</li>
+        <li><strong>Scalability & Reliability:</strong> Automatically scales to handle traffic spikes with consistent
+          performance.</li>
+        <li><strong>Enhanced Security:</strong> Supports SSL/TLS, integrates with AWS Shield and WAF for secure
+          transmissions.</li>
         <li><strong>Cost Efficiency:</strong> Reduces server load and transfer costs by caching static content.</li>
       </ul>
     </section>
@@ -145,7 +156,8 @@
       <ul>
         <li><strong>Static Website Hosting:</strong> Accelerates static asset delivery, improving page load times.</li>
         <li><strong>Video Streaming:</strong> Ensures seamless playback with reduced buffering.</li>
-        <li><strong>E-commerce Platforms:</strong> Boosts user experience with faster page loads during high-traffic events.</li>
+        <li><strong>E-commerce Platforms:</strong> Boosts user experience with faster page loads during high-traffic
+          events.</li>
         <li><strong>API Acceleration:</strong> Optimizes API responses for low-latency, high-speed interactions.</li>
       </ul>
     </section>
@@ -154,12 +166,14 @@
       <h2>Steps to Set Up CloudFront Distribution</h2>
       <h3>1. Navigate to CloudFront Console</h3>
       <p>
-        Access the AWS Management Console and search for CloudFront. Open the CloudFront console to start setting up your distribution.
+        Access the AWS Management Console and search for CloudFront. Open the CloudFront console to start setting up
+        your distribution.
       </p>
 
       <h3>2. Configure Origins</h3>
       <p>
-        Set up your origin, such as an S3 bucket or custom HTTP server, to serve as the content source. This step ensures CloudFront knows where to fetch the content for caching.
+        Set up your origin, such as an S3 bucket or custom HTTP server, to serve as the content source. This step
+        ensures CloudFront knows where to fetch the content for caching.
       </p>
       <div class="image-container">
         <img src="src/blog6/image1.png" alt="Configuring Origin">
@@ -167,7 +181,8 @@
 
       <h3>3. Set Caching Behavior</h3>
       <p>
-        Configure caching rules, enable compression, and set allowed HTTP methods to optimize content delivery and control cache behavior.
+        Configure caching rules, enable compression, and set allowed HTTP methods to optimize content delivery and
+        control cache behavior.
       </p>
       <div class="image-container">
         <img src="src/blog6/image2.png" alt="Caching Behavior Configuration">
@@ -178,7 +193,8 @@
 
       <h3>4. Enable WAF</h3>
       <p>
-        Integrate AWS Web Application Firewall (WAF) to protect against vulnerabilities and threats by enabling security protections.
+        Integrate AWS Web Application Firewall (WAF) to protect against vulnerabilities and threats by enabling security
+        protections.
       </p>
       <div class="image-container">
         <img src="src/blog6/image5.png" alt="WAF Setup">
@@ -186,14 +202,18 @@
 
       <h3>5. Test and Monitor</h3>
       <p>
-        Deploy your CloudFront distribution and use monitoring tools like AWS CloudWatch to analyze performance metrics and optimize further.
+        Deploy your CloudFront distribution and use monitoring tools like AWS CloudWatch to analyze performance metrics
+        and optimize further.
       </p>
     </section>
 
     <section>
       <h2>Conclusion</h2>
       <p>
-        Amazon CloudFront is an essential tool for enhancing web performance. By caching content at edge locations worldwide, it ensures faster load times, improved reliability, and a secure user experience. Whether you're hosting static websites, streaming videos, or accelerating APIs, CloudFront is a scalable and cost-efficient solution to deliver exceptional web performance.
+        Amazon CloudFront is an essential tool for enhancing web performance. By caching content at edge locations
+        worldwide, it ensures faster load times, improved reliability, and a secure user experience. Whether you're
+        hosting static websites, streaming videos, or accelerating APIs, CloudFront is a scalable and cost-efficient
+        solution to deliver exceptional web performance.
       </p>
     </section>
 
@@ -201,7 +221,8 @@
       <h2>References</h2>
       <ul>
         <li><a href="https://aws.amazon.com/cloudfront/" target="_blank">Amazon CloudFront Official Page</a></li>
-        <li><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html" target="_blank">CloudFront Developer Guide</a></li>
+        <li><a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html"
+            target="_blank">CloudFront Developer Guide</a></li>
       </ul>
     </section>
   </main>

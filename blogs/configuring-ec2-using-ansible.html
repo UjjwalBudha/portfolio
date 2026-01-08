@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Configuring EC2 Instance using Ansible</title>
-  <meta content="A comprehensive guide on configuring an AWS EC2 instance using Ansible, including installing Nginx/Apache, deploying applications, and leveraging dynamic inventories." name="description">
+  <meta
+    content="A comprehensive guide on configuring an AWS EC2 instance using Ansible, including installing Nginx/Apache, deploying applications, and leveraging dynamic inventories."
+    name="description">
   <meta content="EC2, Ansible, AWS, Nginx, Node.js, Apache, Configuration" name="keywords">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
@@ -113,13 +115,16 @@
     <section>
       <h2>Introduction</h2>
       <p>
-        This guide provides detailed steps to configure an AWS EC2 instance using Ansible. It covers dynamic inventories, installing web servers (Nginx/Apache), deploying Node.js/Django applications, and using best practices.
+        This guide provides detailed steps to configure an AWS EC2 instance using Ansible. It covers dynamic
+        inventories, installing web servers (Nginx/Apache), deploying Node.js/Django applications, and using best
+        practices.
       </p>
     </section>
 
     <section>
       <h2>Dynamic Inventory</h2>
-      <p>A dynamic inventory dynamically fetches host details during runtime. Use the following configuration for AWS EC2:</p>
+      <p>A dynamic inventory dynamically fetches host details during runtime. Use the following configuration for AWS
+        EC2:</p>
       <pre><code>
 plugin: aws_ec2
 regions:
@@ -227,21 +232,24 @@ server {
     </section>
 
     <section>
-        <h2>Hosted Website</h2>
-        <p>and finally to check the output we will visit the public ip of our instance </p>
-        <div class="image-container">
-          <img src="src/blog4/website_host.png" alt="DynamoDB Table Creation">
-        </div>
-      </section>
+      <h2>Hosted Website</h2>
+      <p>and finally to check the output we will visit the public ip of our instance </p>
+      <div class="image-container">
+        <img src="src/blog4/website_host.png" alt="DynamoDB Table Creation">
+      </div>
+    </section>
 
-      <section>
-        <h2>Reference</h2>
-        <ul>
-          <li><a href="https://docs.ansible.com/" target="_blank">Ansible Documentation</a></li>
-          <li><a href="https://medium.com/cloudnloud/how-to-use-handlers-in-ansible-9e62e17c3b61#:~:text=Handlers%20are%20commonly%20used%20in,see%20the%20changes%20take%20effect." target="_blank">How to use handlers in ansible</a></li>
-          <li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-variables-in-ansible-playbooks" target="_blank">how to use variables in ansible</a></li>
-        </ul>
-      </section>
+    <section>
+      <h2>Reference</h2>
+      <ul>
+        <li><a href="https://docs.ansible.com/" target="_blank">Ansible Documentation</a></li>
+        <li><a
+            href="https://medium.com/cloudnloud/how-to-use-handlers-in-ansible-9e62e17c3b61#:~:text=Handlers%20are%20commonly%20used%20in,see%20the%20changes%20take%20effect."
+            target="_blank">How to use handlers in ansible</a></li>
+        <li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-variables-in-ansible-playbooks"
+            target="_blank">how to use variables in ansible</a></li>
+      </ul>
+    </section>
   </main>
 
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

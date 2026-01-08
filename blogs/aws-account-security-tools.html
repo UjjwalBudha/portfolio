@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>AWS Account Security Tools</title>
-  <meta content="Learn about AWS IAM, AWS Secrets Manager, and Amazon Cognito for securing your AWS account and managing access control." name="description">
+  <meta
+    content="Learn about AWS IAM, AWS Secrets Manager, and Amazon Cognito for securing your AWS account and managing access control."
+    name="description">
   <meta content="AWS, IAM, Secrets Manager, Amazon Cognito, Security, Access Control" name="keywords">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
@@ -126,29 +128,36 @@
     <section>
       <h2>Overview</h2>
       <p>
-        Securing your AWS account is critical to protecting your resources and data. AWS provides several tools to help you manage access control, secrets, and user authentication. This blog covers three key AWS security tools: <strong>AWS Identity and Access Management (IAM)</strong>, <strong>AWS Secrets Manager</strong>, and <strong>Amazon Cognito</strong>.
+        Securing your AWS account is critical to protecting your resources and data. AWS provides several tools to help
+        you manage access control, secrets, and user authentication. This blog covers three key AWS security tools:
+        <strong>AWS Identity and Access Management (IAM)</strong>, <strong>AWS Secrets Manager</strong>, and
+        <strong>Amazon Cognito</strong>.
       </p>
     </section>
 
     <section>
       <h2>AWS Identity and Access Management (IAM)</h2>
       <p>
-        AWS IAM allows you to manage access to AWS services and resources securely. You can create and manage users, groups, roles, and policies to define permissions and control access.
+        AWS IAM allows you to manage access to AWS services and resources securely. You can create and manage users,
+        groups, roles, and policies to define permissions and control access.
       </p>
 
       <h3>IAM Users</h3>
       <p>
-        IAM users are individual entities (people or applications) that can access AWS services. Each user has unique security credentials and permissions.
+        IAM users are individual entities (people or applications) that can access AWS services. Each user has unique
+        security credentials and permissions.
       </p>
 
       <h3>IAM Groups</h3>
       <p>
-        IAM groups are collections of IAM users. You can assign permissions to a group, and all users in the group inherit those permissions.
+        IAM groups are collections of IAM users. You can assign permissions to a group, and all users in the group
+        inherit those permissions.
       </p>
 
       <h3>IAM Roles and Policies</h3>
       <p>
-        IAM roles are sets of permissions that define what actions can be performed on AWS resources. Policies are JSON documents that specify the permissions for roles, users, or groups.
+        IAM roles are sets of permissions that define what actions can be performed on AWS resources. Policies are JSON
+        documents that specify the permissions for roles, users, or groups.
       </p>
 
       <div class="image-container">
@@ -158,15 +167,18 @@
       <h3>Use Cases</h3>
       <ul>
         <li><strong>User Management:</strong> Create and manage users with unique credentials and permissions.</li>
-        <li><strong>Role-based Access Control:</strong> Assign roles to users or services for temporary access to resources.</li>
-        <li><strong>User Provisioning and Onboarding:</strong> Streamline the process of granting new users access to AWS resources.</li>
+        <li><strong>Role-based Access Control:</strong> Assign roles to users or services for temporary access to
+          resources.</li>
+        <li><strong>User Provisioning and Onboarding:</strong> Streamline the process of granting new users access to
+          AWS resources.</li>
       </ul>
     </section>
 
     <section>
       <h2>AWS Secrets Manager</h2>
       <p>
-        AWS Secrets Manager helps you securely store, manage, and retrieve secrets such as database credentials, API keys, and other sensitive information.
+        AWS Secrets Manager helps you securely store, manage, and retrieve secrets such as database credentials, API
+        keys, and other sensitive information.
       </p>
 
       <div class="image-container">
@@ -182,13 +194,15 @@
 
       <h3>Use Cases</h3>
       <ul>
-        <li><strong>Managing Database Credentials:</strong> Securely store and rotate credentials for databases like Amazon RDS and Redshift.</li>
+        <li><strong>Managing Database Credentials:</strong> Securely store and rotate credentials for databases like
+          Amazon RDS and Redshift.</li>
         <li><strong>API Key Management:</strong> Store and manage API keys securely, with automatic rotation.</li>
       </ul>
 
       <h3>Example Scenario</h3>
       <p>
-        Suppose you have a website that connects to a database. Instead of hardcoding the database password in your application, you can:
+        Suppose you have a website that connects to a database. Instead of hardcoding the database password in your
+        application, you can:
       </p>
       <ol>
         <li>Store the password in AWS Secrets Manager.</li>
@@ -200,7 +214,8 @@
     <section>
       <h2>Amazon Cognito</h2>
       <p>
-        Amazon Cognito provides user authentication and access control for web and mobile applications. It supports user sign-up, sign-in, and access to AWS resources.
+        Amazon Cognito provides user authentication and access control for web and mobile applications. It supports user
+        sign-up, sign-in, and access to AWS resources.
       </p>
 
       <div class="image-container">
@@ -209,7 +224,8 @@
 
       <h3>User Pools</h3>
       <p>
-        User pools are user directories that manage sign-up and sign-in functionality. They allow you to create and manage users for your applications.
+        User pools are user directories that manage sign-up and sign-in functionality. They allow you to create and
+        manage users for your applications.
       </p>
 
       <div class="image-container">
@@ -218,7 +234,8 @@
 
       <h3>Identity Pools</h3>
       <p>
-        Identity pools enable you to create unique identities for users and grant them temporary access to AWS resources.
+        Identity pools enable you to create unique identities for users and grant them temporary access to AWS
+        resources.
       </p>
 
       <div class="image-container">
@@ -236,7 +253,9 @@
     <section>
       <h2>Conclusion</h2>
       <p>
-        AWS provides powerful tools like IAM, Secrets Manager, and Cognito to help you secure your account, manage access control, and protect sensitive information. By leveraging these tools, you can build a robust security framework for your AWS environment.
+        AWS provides powerful tools like IAM, Secrets Manager, and Cognito to help you secure your account, manage
+        access control, and protect sensitive information. By leveraging these tools, you can build a robust security
+        framework for your AWS environment.
       </p>
     </section>
 

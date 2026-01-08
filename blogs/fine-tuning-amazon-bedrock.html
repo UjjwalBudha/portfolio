@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Fine-Tuning Foundation Models on Amazon Bedrock: A Comprehensive Guide</title>
+    <meta
+        content="Learn how to optimize foundational models on Amazon Bedrock by setting up IAM, S3, preparing data, and starting fine-tuning jobs."
+        name="description">
+    <meta content="Amazon Bedrock, Fine-Tuning, Generative AI, AWS, Foundation Models, Nova, Titan, Machine Learning"
+        name="keywords">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Raleway", sans-serif;
+            background-color: #040404;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        /* Header Styles */
+        header {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        header .banner {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        header .banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(24, 210, 110, 0.1) 0%, transparent 70%);
+        }
+
+        header .content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        header .blog-date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Content Styling */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        main h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        main h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 20px;
+            border-left: 4px solid #18d26e;
+            padding-left: 10px;
+        }
+
+        main p,
+        main ul {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        main ul li {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        main pre {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+            color: #18d26e;
+            overflow-x: auto;
+            text-align: left;
+            margin: 15px 0;
+        }
+
+        /* Image Styling */
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-caption {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #18d26e;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Blog Header -->
+    <header>
+        <div class="banner">
+            <div class="content">
+                <h1>Fine-Tuning Foundation Models on Amazon Bedrock</h1>
+                <p class="blog-date">05th November 2025</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Content -->
+    <main>
+        <section>
+            <h2>Introduction</h2>
+            <p>
+                When we fine-tune a large foundation model, we can achieve remarkable gains in the actual model's
+                accuracy, relevance, and the actual domain alignment for the application. Using Amazon Bedrock,
+                organizations as well as individuals can customize powerful models such as Titan, Nova, etc, at scale
+                without any need for specialized infrastructure.
+            </p>
+            <p>
+                In this blog, we will demonstrate a workable, comprehensive method for optimizing a foundational model
+                on Amazon Bedrock. You will learn how to set up IAM, S3 correctly, prepare the data, start fine-tuning
+                jobs, and then access your own model through on-demand or provisioned inference.
+            </p>
+        </section>
+
+        <section>
+            <h2>Prerequisites</h2>
+            <ul>
+                <li><strong>AWS account and region:</strong> An AWS account with the right access for Amazon Bedrock in
+                    a supported region.</li>
+                <li><strong>Enable Amazon Bedrock:</strong> Request access to the foundation models you plan to
+                    fine-tune (e.g., Titan, Llama, Nova) in the AWS Console.</li>
+                <li><strong>S3 buckets:</strong> At least one S3 bucket in the same region as your Bedrock job to store
+                    training data and output artifacts.</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="src/blog7/s3_bucket_setup.png" alt="S3 bucket for training data and output artifact">
+                <span class="image-caption">Fig: S3 bucket for training data and output artifact</span>
+            </div>
+
+            <h3>IAM Role for Model Customization</h3>
+            <p>
+                A service role that Bedrock can assume is required, with a trust policy for
+                <code>bedrock.amazonaws.com</code> and permissions to access your S3 buckets. The policy typically looks
+                like this:
+            </p>
+            <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::${training-bucket-name}",
+        "arn:aws:s3:::${training-bucket-name}/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::${output-bucket}",
+        "arn:aws:s3:::${output-bucket}/*"
+      ]
+    }
+  ]
+}</code></pre>
+            <div class="image-container">
+                <img src="src/blog7/iam_role_setup.png" alt="service role for bedrock job">
+                <span class="image-caption">Fig: Service role for bedrock job</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Foundation Model Fine-Tuning Procedure</h2>
+
+            <h3>Step 1 – Design your fine-tuning use case</h3>
+            <p>Before touching data, clarify:</p>
+            <ul>
+                <li><strong>Task type:</strong> What task are you improving (classification, Q&A, chat tone,
+                    summarization, etc.)?</li>
+                <li><strong>Desired behavior:</strong> Tone, phrasing, format, and constraints.</li>
+                <li><strong>Foundation Model:</strong> Choose a supported model family (Titan, Claude, Llama, Nova,
+                    etc.) based on your latency/cost and quality requirements.</li>
+            </ul>
+
+            <h3>Step 2 – Prepare training and validation datasets</h3>
+            <p>
+                By default, the standard pattern is JSON Lines (<code>.jsonl</code>). The exact schema depends on the
+                model type. For example, the Nova model requires a specific conversation format:
+            </p>
+            <pre><code>{
+  "schemaVersion": "bedrock-conversation-2024",
+  "system": [{"text": "You are a fitness and health analysis assistant."}],
+  "messages": [
+    {"role": "user", "content": [{"text": "Analyze: Male 30y, 70kg, 1.75m, BMI 22.86..."}]},
+    {"role": "assistant", "content": [{"text": "Healthy BMI; moderate intensity..."}]}
+  ]
+}</code></pre>
+
+            <div class="image-container">
+                <img src="src/blog7/training_data_format.png" alt="Training data set">
+                <span class="image-caption">Fig: Training data set</span>
+            </div>
+
+            <h3>Step 3 – Upload data to Amazon S3</h3>
+            <p>
+                Upload your <code>train.jsonl</code> and optional <code>validation.jsonl</code> to your S3 bucket.
+                Ensure the bucket uses appropriate encryption and your Bedrock role has the necessary access.
+            </p>
+
+            <h3>Step 4 – Create the fine-tuning job in the Bedrock console</h3>
+            <p>
+                Navigate to <strong>Tune → Custom models</strong> in the Bedrock console and choose <strong>Create
+                    Fine-tuning job</strong>.
+            </p>
+
+            <div class="image-container">
+                <img src="src/blog7/bedrock_job_creation.png" alt="Bedrock fine-tune job">
+                <span class="image-caption">Fig: Bedrock fine-tune job</span>
+            </div>
+
+            <p>Configure your hyperparameters such as <code>epochCount</code>, <code>batchSize</code>, and
+                <code>learningRate</code>.
+            </p>
+
+            <div class="image-container">
+                <img src="src/blog7/hyperparameters_config.png" alt="Hyperparameters for fine-tuning">
+                <span class="image-caption">Fig: Hyperparameters for fine-tuning</span>
+            </div>
+
+            <p>Specify the S3 locations for your input data and output artifacts.</p>
+
+            <div class="image-container">
+                <img src="src/blog7/data_location_config.png" alt="Input and output data location">
+                <span class="image-caption">Fig: Input and output data location</span>
+            </div>
+
+            <h3>Step 6 – Invoke and test the custom model</h3>
+            <p>
+                When the job finishes successfully, register your custom model. You can use <strong>On-Demand</strong>
+                inference (recommended for testing) or Provisioned Throughput.
+            </p>
+
+            <div class="image-container">
+                <img src="src/blog7/ondemand_inference.png" alt="On-Demand inference">
+                <span class="image-caption">Fig: On-Demand inference</span>
+            </div>
+
+            <p>Open the Playground and select your custom model to verify the improvements.</p>
+
+            <div class="image-container">
+                <img src="src/blog7/model_testing_playground.png" alt="Testing the custom-trained model">
+                <span class="image-caption">Fig: Testing the custom-trained model</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Step 7 – Evaluate and iterate</h2>
+            <p>
+                Fine-tuning is iterative. Use validation loss and task-specific metrics to judge performance. You can
+                also run model evaluation jobs in Bedrock to systematically compare your custom model against the base
+                model.
+            </p>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            <p>
+                Fine-tuning on Amazon Bedrock gives teams a powerful way to unlock domain-optimized AI without inventing
+                infrastructure from scratch. By following a repeatable workflow—designing the use case, preparing clean
+                JSONL data, configuring IAM and S3 correctly, and tuning hyperparameters—you can safely build custom
+                models that behave exactly how you need.
+            </p>
+        </section>
+
+        <section>
+            <h2>References</h2>
+            <ul>
+                <li><a href="https://aws.amazon.com/bedrock/" target="_blank">Amazon Bedrock Official Page</a></li>
+                <li><a href="https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html"
+                        target="_blank">Bedrock Custom Models Guide</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

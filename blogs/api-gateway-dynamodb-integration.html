@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>API Gateway with DynamoDB Integration</title>
-  <meta content="Step-by-step guide to create an API Gateway with GET and POST methods to interact with DynamoDB for managing movie details." name="description">
+  <meta
+    content="Step-by-step guide to create an API Gateway with GET and POST methods to interact with DynamoDB for managing movie details."
+    name="description">
   <meta content="API Gateway, DynamoDB, AWS, REST API, GET, POST, Lambda" name="keywords">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
@@ -118,7 +120,9 @@
     <section>
       <h2>Overview</h2>
       <p>
-        This documentation outlines the steps to create an API Gateway with GET and POST methods to interact with DynamoDB, serving as the database for movie details. It provides a seamless way to push and fetch movie data using API Gateway and DynamoDB integration.
+        This documentation outlines the steps to create an API Gateway with GET and POST methods to interact with
+        DynamoDB, serving as the database for movie details. It provides a seamless way to push and fetch movie data
+        using API Gateway and DynamoDB integration.
       </p>
     </section>
 
@@ -135,7 +139,10 @@
       <h2>Steps</h2>
       <h3>1. Create DynamoDB Table</h3>
       <p>
-        Log in to your AWS Management Console and navigate to the DynamoDB service. Click on "Create table" and provide necessary details such as table name and primary key. For example, you can use "Movies" as the table name with "movie_id" as the primary key. Configure additional settings as per your requirements and click on "Create table".
+        Log in to your AWS Management Console and navigate to the DynamoDB service. Click on "Create table" and provide
+        necessary details such as table name and primary key. For example, you can use "Movies" as the table name with
+        "movie_id" as the primary key. Configure additional settings as per your requirements and click on "Create
+        table".
       </p>
       <div class="image-container">
         <img src="src/blog2/dynamodb.png" alt="DynamoDB Table Creation">
@@ -143,7 +150,8 @@
 
       <h3>2. Set Up IAM Roles and Policies</h3>
       <p>
-        Navigate to the IAM service in the AWS Management Console. Click on "Roles" and then "Create role". Select "AWS service" and choose "Lambda" or "API Gateway" depending on your integration method.
+        Navigate to the IAM service in the AWS Management Console. Click on "Roles" and then "Create role". Select "AWS
+        service" and choose "Lambda" or "API Gateway" depending on your integration method.
       </p>
       <div class="image-container">
         <img src="src/blog2/iam_role.png" alt="IAM Role Creation">
@@ -151,7 +159,8 @@
 
       <h3>3. Set Up API Gateway</h3>
       <p>
-        Navigate to the API Gateway service in the AWS Management Console. Click on "Create API" and choose "REST API". Select "New API" and give your API a name. Click on "Create API".
+        Navigate to the API Gateway service in the AWS Management Console. Click on "Create API" and choose "REST API".
+        Select "New API" and give your API a name. Click on "Create API".
       </p>
       <div class="image-container">
         <img src="src/blog2/api_gateway.png" alt="API Gateway Creation">
@@ -159,16 +168,20 @@
 
       <h3>4. Define Resources and Methods</h3>
       <p>
-        Under your newly created API, click on "Actions" and choose "Create Resource". Define a resource name, for example, "movies". Once created, click on the resource and choose "Create Method". Select "GET" for fetching data and "POST" for adding data.
+        Under your newly created API, click on "Actions" and choose "Create Resource". Define a resource name, for
+        example, "movies". Once created, click on the resource and choose "Create Method". Select "GET" for fetching
+        data and "POST" for adding data.
       </p>
       <p>
-        For GET method, choose "Integration type" as "AWS Service" and select "DynamoDB" as the integration point. Configure the integration to interact with your DynamoDB table.
+        For GET method, choose "Integration type" as "AWS Service" and select "DynamoDB" as the integration point.
+        Configure the integration to interact with your DynamoDB table.
       </p>
       <div class="image-container">
         <img src="src/blog2/get_method.png" alt="GET Method Configuration">
       </div>
       <p>
-        For POST method, choose "Integration type" as "Lambda Function" (or "AWS Service" if you prefer using DynamoDB directly), and configure it to interact with your DynamoDB table to add new movie details.
+        For POST method, choose "Integration type" as "Lambda Function" (or "AWS Service" if you prefer using DynamoDB
+        directly), and configure it to interact with your DynamoDB table to add new movie details.
       </p>
       <div class="image-container">
         <img src="src/blog2/post_method.png" alt="POST Method Configuration">
@@ -176,7 +189,9 @@
 
       <h3>5. Deploy API</h3>
       <p>
-        After configuring resources and methods, click on "Actions" and choose "Deploy API". Select a deployment stage (e.g., "Prod") and click on "Deploy". Make note of the provided API endpoint URL, which will be used to access your API.
+        After configuring resources and methods, click on "Actions" and choose "Deploy API". Select a deployment stage
+        (e.g., "Prod") and click on "Deploy". Make note of the provided API endpoint URL, which will be used to access
+        your API.
       </p>
       <div class="image-container">
         <img src="src/blog2/deploy_api.png" alt="API Deployment">
@@ -184,7 +199,9 @@
 
       <h3>6. Test Endpoints</h3>
       <p>
-        Use tools like Postman or cURL to test your API endpoints. For GET method, send a request to the endpoint URL to fetch movie details. For POST method, send a request with JSON payload containing movie details to add new entries to the DynamoDB table.
+        Use tools like Postman or cURL to test your API endpoints. For GET method, send a request to the endpoint URL to
+        fetch movie details. For POST method, send a request with JSON payload containing movie details to add new
+        entries to the DynamoDB table.
       </p>
       <div class="image-container">
         <img src="src/blog2/test_get.png" alt="Testing GET Request">
@@ -197,16 +214,23 @@
     <section>
       <h2>Conclusion</h2>
       <p>
-        By following the above steps, you have successfully created an API Gateway integrated with DynamoDB to manage movie details. This setup provides a scalable and efficient way to push and fetch data, allowing seamless interaction between your application and the database.
+        By following the above steps, you have successfully created an API Gateway integrated with DynamoDB to manage
+        movie details. This setup provides a scalable and efficient way to push and fetch data, allowing seamless
+        interaction between your application and the database.
       </p>
     </section>
 
     <section>
       <h2>Reference</h2>
       <ul>
-        <li><a href="https://www.mulesoft.com/resources/api/what-is-an-api" target="_blank">What is an API? (Application Programming Interface) | MuleSoft</a></li>
-        <li><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations.html" target="_blank">Actions - Amazon DynamoDB</a></li>
-        <li><a href="https://docs.aws.amazon.com/codebuild/latest/userguide/troubleshooting.html#troubleshooting-api-gateway" target="_blank">com.amazon.coral.service#UnknownOperationException when triggering CodeBuild from API Gateway</a></li>
+        <li><a href="https://www.mulesoft.com/resources/api/what-is-an-api" target="_blank">What is an API? (Application
+            Programming Interface) | MuleSoft</a></li>
+        <li><a href="https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations.html"
+            target="_blank">Actions - Amazon DynamoDB</a></li>
+        <li><a
+            href="https://docs.aws.amazon.com/codebuild/latest/userguide/troubleshooting.html#troubleshooting-api-gateway"
+            target="_blank">com.amazon.coral.service#UnknownOperationException when triggering CodeBuild from API
+            Gateway</a></li>
       </ul>
     </section>
   </main>
