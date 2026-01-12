@@ -250,24 +250,52 @@
     <div class="container">
       <div class="section-title">
         <h2>Resume</h2>
-        <p class="resume-text">Check My Resume <button class="resume-button" onclick="downloadResume()">Resume</button>
+        <p class="resume-text">Check My Resume <button class="resume-button" onclick="downloadResume()">Download</button>
         </p>
       </div>
       <div class="row">
         <div class="col-lg-6">
           <h3 class="resume-title">Summary</h3>
           <div class="resume-item pb-0">
-            <p><em>Dedicated and result-oriented DevOps Engineer with a year of experience in building, automating, and
-                optimizing cloud infrastructure and CI/CD workflows. Aligning with AWS's Well-Architected Framework
-                Pillars, constantly seeking opportunities, and contributing to innovative projects while ensuring system
-                efficiency and reliability.</em></p>
+            <p><em>DevOps Engineer with two years of experience building and automating cloud infrastructure, CI/CD pipelines,
+                and container orchestration platforms. Focused on improving system reliability, reducing operational overhead,
+                and implementing observability practices to ensure high availability and rapid incident response in production
+                environments.</em></p>
+          </div>
+          <h3 class="resume-title">Projects</h3>
+          <div class="resume-item">
+            <h4>Infix - <a href="https://infix.cloud/" target="_blank" style="color: #18d26e;">infix.cloud</a></h4>
+            <ul>
+              <li>Built and operated a highly available Kubernetes cluster using kubeadm, configuring multiple control plane nodes, etcd, and core components.</li>
+              <li>Deployed and managed application workloads using Helm, enabling standardized, versioned releases with rolling updates and rollback capabilities.</li>
+              <li>Configured Kubernetes networking components, including CNI, Services, and Ingress controllers for reliable internal communication and external traffic routing.</li>
+              <li>Enabled zero-downtime deployments by implementing automated CI/CD workflows with rollback capabilities.</li>
+              <li>Implemented cluster reliability and scaling mechanisms, including liveness/readiness probes, pod anti-affinity, and horizontal scaling strategies.</li>
+              <li>Enforced operational and resource governance through RBAC, namespaces, ConfigMaps, Secrets, and CPU/memory requests and limits.</li>
+            </ul>
+          </div>
+          <div class="resume-item">
+            <h4>Lasius - <a href="https://lasius.io/" target="_blank" style="color: #18d26e;">lasius.io</a></h4>
+            <ul>
+              <li>Deployed Dev, Staging, and Prod AWS infrastructure with Terraform (ECS Fargate, ALB, Aurora, Redis, ECR), ensuring high availability.</li>
+              <li>Implemented AWS Secrets Manager for secure secret injection into containers, eliminating hardcoded credentials and improving security compliance.</li>
+              <li>Automated CI/CD pipelines with GitHub Actions, enabling automated rollbacks.</li>
+              <li>Established service discovery, security groups, and IAM roles, enforcing least-privilege access for microservices.</li>
+              <li>Created architecture documentation and runbooks, improving handover efficiency and operational consistency.</li>
+            </ul>
+          </div>
+          <h3 class="resume-title">Training and Certifications</h3>
+          <div class="resume-item">
+            <ul>
+              <li>AWS Certified Solution Architect Associate</li>
+            </ul>
           </div>
           <h3 class="resume-title">Education</h3>
           <div class="resume-item">
             <h4>BSC CSIT</h4>
             <h5>2022 - 2025</h5>
             <p><em>Texas International College, Mitrapark Kathmandu</em></p>
-            <p>I am pursuing my graduation degree in computer science </p>
+            <p>Completed graduation degree in Computer Science and Information Technology</p>
           </div>
           <div class="resume-item">
             <h4>10+2, NEB</h4>
@@ -284,38 +312,37 @@
         <div class="col-lg-6">
           <h3 class="resume-title">Professional Experiences</h3>
           <div class="resume-item">
-            <h4>Jr. Cloud Engineer, Adex International Pvt. Ltd.</h4>
-            <h5>Jul 2024 - Present</h5>
-            <p><em>Jr Cloud Engineer</em></p>
+            <h4>DevOps Engineer, Adex International Pvt. Ltd.</h4>
+            <h5>Jul 2025 - Present</h5>
+            <p><em>DevOps Engineer</em></p>
             <p>
             <ul>
-              <li>Migrated an on-premises system to AWS, ensuring a seamless transition and minimal disruption.</li>
-              <li>Collaborated closely with clients to understand their needs and deliver the expected outcomes.</li>
-              <li>Deployed and managed production websites, ensuring high availability and performance.</li>
-              <li>Automated the provisioning of cloud infrastructure using AWS services to improve efficiency and
-                scalability.</li>
-              <li>Monitored cloud resources to optimize cost, reliability, and performance.</li>
-              <li>Implemented CI/CD pipelines for streamlined deployment and version control.</li>
-              <li>Conducted research, analysis, and documentation for AWS Service Delivery Program compliance,
-                establishing best practices and configurations.</li>
+              <li>Architected and managed multi-environment cloud infrastructure (Dev, Staging, Prod) using Terraform and Ansible, ensuring infrastructure state consistency.</li>
+              <li>Engineered robust CI/CD pipelines using GitHub Actions, enabling zero-downtime deployments for microservices on AWS ECS Fargate.</li>
+              <li>Orchestrated high-availability Kubernetes clusters using Kubeadm and Helm, implementing auto-scaling, self-healing mechanisms, and Ingress controllers.</li>
+              <li>Developed reusable Terraform modules for OpenSearch deployment, encapsulating best practices for domain configuration, access policies, and encryption settings.</li>
+              <li>Hardened cloud security posture by implementing AWS Secrets Manager to eliminate hardcoded credentials and enforcing IAM least-privilege policies.</li>
+              <li>Implemented a comprehensive observability stack using Prometheus, Grafana, and OpenSearch, creating custom dashboards that reduced Mean Time to Resolution (MTTR).</li>
+              <li>Optimized database architecture for Amazon Aurora and Redis, implementing automated backups, read replicas, and connection pooling.</li>
+              <li>Led the containerization strategy using Docker and ECR, standardizing runtime environments across local, staging, and production.</li>
+              <li>Conducted infrastructure cost analysis and rightsizing, utilizing AWS cost explorer and lifecycle policies to optimize resource usage.</li>
+              <li>Streamlined application logging architecture using AWS CloudWatch Logs and Fluentd, centralizing log aggregation across distributed services.</li>
+              <li>Established disaster recovery runbooks and conducted regular failover drills, ensuring business continuity and maintaining RPO/RTO targets.</li>
             </ul>
             </p>
           </div>
           <div class="resume-item">
-            <h4>DevOps Intern, Adex International Pvt. Ltd.</h4>
-            <h5>Apr 2024 - Jul 2024</h5>
-            <p><em>DevOps Intern</em></p>
+            <h4>Jr. Cloud Engineer, Adex International Pvt. Ltd.</h4>
+            <h5>Apr 2024 - Jul 2025</h5>
+            <p><em>Jr. Cloud Engineer</em></p>
             <p>
             <ul>
-              <li>Acquired practical experience in cloud computing using AWS.</li>
-              <li>Worked alongside the development team to configure and maintain cloud environments.</li>
-              <li>Troubleshot and resolved technical issues to ensure seamless application operation.</li>
-              <li>Delivered solutions on schedule and within budget, maintaining high development standards.</li>
-              <li>Tested websites on IIS and Nginx deployed for web hosting.</li>
-              <li>Built and deployed Docker containers to streamline application deployment.</li>
-              <li>Managed source code and version control using Git workflows.</li>
-              <li>Configured Nginx for reverse proxying and load balancing.</li>
-              <li>Optimized both Linux and Windows servers for enhanced scalability and performance.</li>
+              <li>Migrated 10+ applications to AWS, ensuring a seamless transition and minimal disruption.</li>
+              <li>Collaborated closely with clients to understand their needs and deliver the expected outcomes.</li>
+              <li>Enforced AWS Tag Policies to identify wasted resources, resulting in optimized spend and improved budget allocation.</li>
+              <li>Enabled zero-downtime deployments by implementing automated CI/CD workflows with immediate rollback capabilities.</li>
+              <li>Architected secure network topologies utilizing custom VPCs, private subnets, and Security Groups to ensure strict traffic isolation and data protection.</li>
+              <li>Conducted research, analysis, and documentation for AWS Service Delivery Program compliance and AWS Competency Program.</li>
             </ul>
             </p>
           </div>
@@ -323,75 +350,14 @@
           <div class="resume-item">
             <h4>Technical Skills</h4>
             <ul>
-              <li><strong>IaC:</strong> Terraform, Ansible, SAM, Cloudformation</li>
-              <li><strong>AWS Cloud</strong></li>
-              <li><strong>Version Control:</strong> GitHub, GitHub Actions, GitLab</li>
-              <li><strong>Database:</strong> DynamoDB, MySQL, PostgreSQL</li>
-              <li><strong>Scripting and Automation:</strong> Python, Bash</li>
-              <li><strong>Monitoring:</strong> Cloudwatch, Grafana, Prometheus</li>
-              <li><strong>Research, Analysis, and Documentation</strong></li>
-              <li><strong>Critical Thinking, Problem Solving</strong></li>
-              <li><strong>Communication, Collaboration</strong></li>
-            </ul>
-          </div>
-          <h3 class="resume-title">Training and Certifications</h3>
-          <div class="resume-item">
-            <ul>
-              <li>AWS Certified Solution Architect Associate</li>
-            </ul>
-          </div>
-          <h3 class="resume-title">Projects</h3>
-          <div class="resume-item">
-            <h4>Migration to AWS</h4>
-            <ul>
-              <li>Migrated a client’s application from on-premises to AWS.</li>
-              <li>Automated infrastructure provisioning using Terraform with GitLab CI/CD.</li>
-              <li>Used AWS ECS Fargate and serverless services to reduce operational overhead.</li>
-              <li>Developed an end-to-end provisioning workflow from setup to deployment.</li>
-            </ul>
-          </div>
-          <div class="resume-item">
-            <h4>Rearchitected E-commerce Website with Serverless AWS</h4>
-            <ul>
-              <li>Built a serverless backend using AWS Lambda and DynamoDB for scalability.</li>
-              <li>Integrated API Gateway for seamless frontend-backend communication.</li>
-              <li>Optimized cost and performance while eliminating server management.</li>
-            </ul>
-          </div>
-          <div class="resume-item">
-            <h4>Automated Integration & Deployment</h4>
-            <ul>
-              <li>Automated cloud infrastructure provisioning with Terraform.</li>
-              <li>Integrated GitHub with CI/CD pipelines for streamlined deployments.</li>
-              <li>Ensured consistency, repeatability, and performance across environments.</li>
-            </ul>
-          </div>
-          <div class="resume-item">
-            <h4>Intelligent Document Processing (IDP) with AWS AI</h4>
-            <ul>
-              <li>Built an IDP system using AWS Lambda, S3, Textract, Comprehend, and Bedrock.</li>
-              <li>Automated document processing workflows with event-driven Lambda functions.</li>
-              <li>Leveraged AI for text extraction, sentiment analysis, and entity recognition.</li>
-            </ul>
-          </div>
-          <div class="resume-item">
-            <h4>Gen AI Marketing Application Deployment</h4>
-            <ul>
-              <li>Deployed LuxoraDesign’s Gen AI marketing app on AWS for scalability.</li>
-              <li>Used Terraform with GitHub Actions for automated deployments.</li>
-              <li>Implemented ECS Fargate & Lambda for containerized and serverless workloads.</li>
-              <li>Integrated AI-driven content creation via Amazon Bedrock, Personalize, and Pinpoint.</li>
-              <li>Enforced security best practices and disaster recovery with AWS Backup & WAF.</li>
-            </ul>
-          </div>
-          <div class="resume-item">
-            <h4>Scalable AWS Chatbot Application</h4>
-            <ul>
-              <li>Designed and deployed a scalable chatbot on AWS.</li>
-              <li>Automated infrastructure provisioning with Terraform and GitHub Actions.</li>
-              <li>Used ECS Fargate & Lambda for high availability and auto-scaling.</li>
-              <li>Integrated AI-driven chatbot intelligence with Amazon Bedrock, Personalize, and Pinpoint.</li>
-              <li>Ensured security, cost optimization, and disaster recovery with AWS WAF, Backup & CloudWatch.</li>
+              <li><strong>IaC:</strong> Terraform, Ansible, Cloudformation</li>
+              <li><strong>Cloud:</strong> AWS, Linode, Azure</li>
+              <li><strong>Container Orchestration:</strong> Kubernetes, Docker, Helm, ECS Fargate, ECR</li>
+              <li><strong>CI/CD:</strong> GitHub Actions, GitLab CI/CD</li>
+              <li><strong>Databases:</strong> Amazon Aurora, DynamoDB, MySQL, PostgreSQL, Redis</li>
+              <li><strong>Monitoring & Observability:</strong> Prometheus, Grafana, CloudWatch, OpenSearch, Fluentd</li>
+              <li><strong>Scripting & Automation:</strong> Python, Bash</li>
+              <li><strong>Security:</strong> AWS Secrets Manager, IAM, Security Groups, RBAC</li>
             </ul>
           </div>
         </div>
