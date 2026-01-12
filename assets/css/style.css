@@ -991,6 +991,12 @@ section .container {
 }
 
 /* Blog Section Styles */
+.blogs .blog-card-link {
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
 .blogs .blog-card {
   background: rgba(255, 255, 255, 0.08);
   padding: 20px;
@@ -1004,8 +1010,9 @@ section .container {
   justify-content: space-between;
 }
 
-.blogs .blog-card:hover {
+.blogs .blog-card-link:hover .blog-card {
   background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-5px);
 }
 
 .blogs .blog-card img {
@@ -1030,14 +1037,10 @@ section .container {
   /* Hide overflow text */
   text-overflow: ellipsis;
   /* Add ... for overflow text */
-}
-
-.blogs .blog-card h4 a {
-  color: #fff;
   transition: 0.3s;
 }
 
-.blogs .blog-card h4 a:hover {
+.blogs .blog-card-link:hover .blog-card h4 {
   color: #18d26e;
 }
 
