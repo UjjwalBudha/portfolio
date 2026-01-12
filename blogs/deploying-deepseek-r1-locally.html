@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>How to Deploy DeepSeek-r1 on LLM Locally: Complete Ollama & Open WebUI Guide</title>
+    <meta
+        content="Learn how to deploy DeepSeek-r1 LLM models locally on CPU/GPU using Ollama and Open WebUI. Step-by-step guide for 1.5B and 7B parameter models with performance tuning tips."
+        name="description">
+    <meta content="DeepSeek-r1, LLM, Local Deployment, Ollama, Open WebUI, AI, Machine Learning, Docker, CPU Deployment, GPU Deployment"
+        name="keywords">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Raleway", sans-serif;
+            background-color: #040404;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        /* Header Styles */
+        header {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        header .banner {
+            width: 100%;
+            height: 300px;
+            background: url('assets/img/banner.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        header .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        header .blog-date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Content Styling */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        main h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        main h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 20px;
+            border-left: 4px solid #18d26e;
+            padding-left: 10px;
+        }
+
+        main p,
+        main ul {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        main ul li {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        /* Anchor Tag Styling */
+        a {
+            color: #18d26e;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        a:hover {
+            color: #1de07e;
+            border-bottom: 1px solid #18d26e;
+        }
+
+        main pre {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+            color: #18d26e;
+            overflow-x: auto;
+            text-align: left;
+            margin: 15px 0;
+        }
+
+        /* Image Styling */
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-caption {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #18d26e;
+        }
+
+        /* Warning Box Styling */
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box p {
+            color: #ffc107;
+            margin: 0;
+        }
+
+        /* Info Box Styling */
+        .info-box {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid #8a2be2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .info-box strong {
+            color: #8a2be2;
+        }
+
+        /* Author Section Styling */
+        .author-section {
+            max-width: 800px;
+            margin: 40px auto 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            border-left: 4px solid #18d26e;
+        }
+
+        .author-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-bottom: 10px;
+        }
+
+        .author-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .author-date {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .author-bio {
+            font-size: 15px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Blog Header -->
+    <header>
+        <div class="banner">
+            <div class="content">
+                <h1>Deploy DeepSeek-R1 LLM Locally with Ollama and Open WebUI</h1>
+                <p class="blog-date">2nd january 2025</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Content -->
+    <main>
+        <section>
+            <h2>Introduction</h2>
+            <p>
+                Deploying Large Language Models (LLMs) locally can be challenging, but with DeepSeek-r1, it's now more accessible than ever.
+            </p>
+            <p>
+                In this blog, I'll guide you through deploying a DeepSeek-r1 model on your local CPU/GPU system. We'll focus on deploying both 1.5B and 7B parameter models, depending on your system's capabilities. We'll also optimize the Ollama server to handle multiple concurrent requests and improve its performance. Finally, we'll set up the Open WebUI for better model interaction and management.
+            </p>
+        </section>
+
+        <section>
+            <h2>Prerequisites and System Requirements</h2>
+            <p>
+                Before diving in, make sure you have the following:
+            </p>
+
+            <h3>Hardware:</h3>
+            <ul>
+                <li><strong>CPU Deployment:</strong> A modern multi-core CPU (quad-core or better recommended).</li>
+                <li><strong>RAM:</strong> 8GB or more is recommended.</li>
+                <li><strong>Storage:</strong> SSD storage is highly recommended to reduce model load times.</li>
+            </ul>
+
+            <h3>Software:</h3>
+            <ul>
+                <li><strong>Operating System:</strong> Linux, macOS, or Windows (with WSL2 for Linux-based tools).</li>
+                <li><strong>Git:</strong> For cloning repositories.</li>
+                <li><strong>Docker:</strong> (Recommended for containerized deployments).</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Let's start by installing Ollama</h2>
+            
+            <h3>1. Install Ollama</h3>
+            <p>
+                To install Ollama, execute the following command in your terminal to download and run the official installation script:
+            </p>
+            <pre><code>curl -fsSL https://ollama.com/install.sh | sh</code></pre>
+
+            <div class="image-container">
+                <img src="src/blog9/installing-ollama.png" alt="Installing Ollama">
+                <span class="image-caption">Fig: Installing Ollama</span>
+            </div>
+
+            <div class="warning-box">
+                <p>⚠️ Since we are running the model on a CPU-based system this warning may appear which is normal and can be avoided</p>
+            </div>
+
+            <p>
+                After running above script, Ollama will be installed on your system. Verify the installation by checking the version:
+            </p>
+            <pre><code>ollama --version</code></pre>
+
+            <div class="image-container">
+                <img src="src/blog9/ollama-version.png" alt="Ollama version">
+                <span class="image-caption">Fig: Ollama version</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Pull the DeepSeek-r1 Models</h2>
+            <p>
+                Now that Ollama is installed, let's pull the DeepSeek-r1 models. You can download both the 1.5B and 7B versions using the Ollama CLI:
+            </p>
+            <pre><code>ollama pull deepseek-r1
+ollama pull deepseek-r1:7b</code></pre>
+
+            <p>
+                To verify that both Ollama models are pulled successfully we can run:
+            </p>
+            <pre><code>ollama list</code></pre>
+
+            <div class="image-container">
+                <img src="src/blog9/ollama-models.png" alt="Listing Ollama models">
+                <span class="image-caption">Fig: Listing Ollama models</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Run the DeepSeek-r1 Models Locally [CLI]</h2>
+            <p>
+                After pulling the models, you can run them locally with Ollama. You can start each model using the following commands:
+            </p>
+            <pre><code>ollama run deepseek-r1
+ollama run deepseek-r1:7b</code></pre>
+
+            <div class="image-container">
+                <img src="src/blog9/running-ollama-cli.png" alt="Running Ollama CLI">
+                <span class="image-caption">Fig: Running Ollama CLI</span>
+            </div>
+
+            <p>
+                Voila! The model is working. We can also send a query to the model to test if it responds properly:
+            </p>
+
+            <div class="image-container">
+                <img src="src/blog9/testing-ollama-endpoint.png" alt="Testing Ollama endpoint">
+                <span class="image-caption">Fig: Testing Ollama endpoint</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Deploy the Ollama WebUI Using Docker</h2>
+            <p>
+                To simplify interaction with your models, you can deploy a web-based interface using Docker. This allows you to manage and query your models through a clean, browser-based UI.
+            </p>
+            <p>
+                First, make sure that docker is present in your system if not make sure you install it from here <a href="https://docs.docker.com/engine/install/" target="_blank">Docker Installation</a>
+            </p>
+
+            <div class="image-container">
+                <img src="src/blog9/docker_verson.png" alt="Docker Version">
+                <span class="image-caption">Fig: Docker Version</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>5. Deploy the Open WebUI Using Docker</h2>
+            <p>
+                For more efficient model interaction, we'll deploy Open WebUI (formerly known as Ollama Web UI). The following Docker command will map container port 8080 to host port 3000 and ensure the container can communicate with the Ollama server running on your host machine.
+            </p>
+            <p>
+                Run the following Docker command:
+            </p>
+            <pre><code>docker run -d -p 3000:8080 --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:main</code></pre>
+
+            <div class="image-container">
+                <img src="src/blog9/running_openui-docker-container.png" alt="Running OpenUI docker container">
+                <span class="image-caption">Fig: Running OpenUI docker container</span>
+            </div>
+
+            <p>
+                Now, the WebUI has been successfully deployed which can be accessed at <code>http://localhost:3000</code>
+            </p>
+
+            <div class="image-container">
+                <img src="src/blog9/openwebui.png" alt="Open WebUI">
+                <span class="image-caption">Fig: Open WebUI</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>6. Advanced Ollama Performance Tuning [ Optional ]</h2>
+            <p>
+                For users looking to squeeze extra performance and customize how Ollama handles model inference and resource management, you can adjust several environment variables before starting the Ollama server.
+            </p>
+            <pre><code>export OLLAMA_FLASH_ATTENTION=1
+export OLLAMA_KV_CACHE_TYPE=q8_0
+export OLLAMA_KEEP_ALIVE="-1"
+export OLLAMA_MAX_LOADED_MODELS=3
+export OLLAMA_NUM_PARALLEL=8
+export OLLAMA_MAX_QUEUE=1024</code></pre>
+
+            <div class="info-box">
+                <ul>
+                    <li><strong>OLLAMA_FLASH_ATTENTION:</strong> Enabling this can boost performance by optimizing attention mechanisms within the model.</li>
+                    <li><strong>OLLAMA_KV_CACHE_TYPE:</strong> This setting manages the key-value caching strategy; <code>q8_0</code> can help reduce memory footprint while maintaining speed.</li>
+                    <li><strong>OLLAMA_KEEP_ALIVE:</strong> This controls connection persistence; setting it to <code>-1</code> disables the timeout.</li>
+                    <li><strong>OLLAMA_MAX_LOADED_MODELS:</strong> Adjust this based on your system's memory capacity to control how many models are loaded concurrently.</li>
+                    <li><strong>OLLAMA_NUM_PARALLEL:</strong> Increasing this value can improve throughput on multi-core systems.</li>
+                    <li><strong>OLLAMA_MAX_QUEUE:</strong> This defines the maximum number of queued requests, useful for high-concurrency environments.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            <p>
+                By following this blog post, you can seamlessly set up your local environment to deploy and interact with the DeepSeek-r1 model using Ollama and Open WebUI. You'll be able to harness both the 1.5B and 7B parameter models to their full potential.
+            </p>
+            <p>
+                Happy deploying and experimenting with your AI models!
+            </p>
+        </section>
+
+        <section class="author-section">
+            <h3>Written By</h3>
+            <p class="author-name">Ujwal Budha</p>
+            <p class="author-date">Published: 2nd january 2025</p>
+            <p class="author-bio">
+                Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd., he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and helping others navigate their cloud journey.
+            </p>
+        </section>
+    </main>
+
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
