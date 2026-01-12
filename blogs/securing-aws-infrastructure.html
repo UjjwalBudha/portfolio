@@ -79,6 +79,56 @@
       list-style-type: disc;
       margin-left: 20px;
     }
+
+    /* Anchor Tag Styling */
+    a {
+      color: #18d26e;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    a:hover {
+      color: #1de07e;
+      border-bottom: 1px solid #18d26e;
+    }
+
+    /* Author Section Styling */
+    .author-section {
+      max-width: 800px;
+      margin: 40px auto 20px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      border-left: 4px solid #18d26e;
+    }
+
+    .author-section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #18d26e;
+      margin-bottom: 10px;
+    }
+
+    .author-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .author-date {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 15px;
+    }
+
+    .author-bio {
+      font-size: 15px;
+      color: #ccc;
+      line-height: 1.6;
+    }
   </style>
 </head>
 
@@ -194,6 +244,15 @@
             Guide</a></li>
         <li><a href="https://docs.aws.amazon.com/vpc/index.html" target="_blank">Amazon VPC Documentation</a></li>
       </ul>
+    </section>
+
+    <section class="author-section">
+      <h3>Written By</h3>
+      <p class="author-name">Ujwal Budha</p>
+      <p class="author-date">Published: 5th November 2025</p>
+      <p class="author-bio">
+        Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd., he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and helping others navigate their cloud journey.
+      </p>
     </section>
   </main>
 

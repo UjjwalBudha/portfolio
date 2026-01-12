@@ -80,6 +80,20 @@
       margin-left: 20px;
     }
 
+    /* Anchor Tag Styling */
+    a {
+      color: #18d26e;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    a:hover {
+      color: #1de07e;
+      border-bottom: 1px solid #18d26e;
+    }
+
     main pre {
       background: rgba(255, 255, 255, 0.08);
       padding: 15px;
@@ -101,6 +115,42 @@
       height: auto;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Author Section Styling */
+    .author-section {
+      max-width: 800px;
+      margin: 40px auto 20px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      border-left: 4px solid #18d26e;
+    }
+
+    .author-section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #18d26e;
+      margin-bottom: 10px;
+    }
+
+    .author-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .author-date {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 15px;
+    }
+
+    .author-bio {
+      font-size: 15px;
+      color: #ccc;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -231,6 +281,15 @@ sudo systemctl enable apache2
         Congratulations! You have successfully created and configured an EC2 instance, installed Apache, and secured it
         using SSH and SSM. With these skills, you can deploy scalable and secure applications on AWS. Keep exploring to
         master more advanced AWS features.
+      </p>
+    </section>
+
+    <section class="author-section">
+      <h3>Written By</h3>
+      <p class="author-name">Ujwal Budha</p>
+      <p class="author-date">Published: 10th July 2025</p>
+      <p class="author-bio">
+        Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd., he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and helping others navigate their cloud journey.
       </p>
     </section>
   </main>
