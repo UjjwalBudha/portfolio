@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>How to Remove Sensitive Information from Git History: Complete Guide</title>
+    <meta
+        content="Learn how to permanently remove passwords, API keys, and other sensitive data from Git repository history using git filter-repo. Step-by-step guide with safety checks."
+        name="description">
+    <meta content="Git, Git History, Security, API Keys, Passwords, git filter-repo, GitHub, Version Control, Repository Cleanup, Data Security"
+        name="keywords">
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Raleway", sans-serif;
+            background-color: #040404;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        /* Header Styles */
+        header {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        header .banner {
+            width: 100%;
+            height: 300px;
+            background: url('https://images.unsplash.com/photo-1618401479427-c8ef9465fbe1?w=1200&h=400&fit=crop') no-repeat center center;
+            background-size: cover;
+        }
+
+        header .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        header .blog-date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Content Styling */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        main h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        main h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 20px;
+            border-left: 4px solid #18d26e;
+            padding-left: 10px;
+        }
+
+        main p,
+        main ul {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        main ul li {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        main ol li {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Anchor Tag Styling */
+        a {
+            color: #18d26e;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        a:hover {
+            color: #1de07e;
+            border-bottom: 1px solid #18d26e;
+        }
+
+        main pre {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+            color: #18d26e;
+            overflow-x: auto;
+            text-align: left;
+            margin: 15px 0;
+        }
+
+        /* Image Styling */
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-caption {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #18d26e;
+        }
+
+        /* Warning Box Styling */
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box p {
+            color: #ffc107;
+            margin: 0;
+        }
+
+        /* Danger Box Styling */
+        .danger-box {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .danger-box p {
+            color: #ff6b6b;
+            margin: 0;
+        }
+
+        /* Info Box Styling */
+        .info-box {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid #8a2be2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .info-box strong {
+            color: #8a2be2;
+        }
+
+        /* Success Box Styling */
+        .success-box {
+            background: rgba(24, 210, 110, 0.1);
+            border-left: 4px solid #18d26e;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box p {
+            color: #18d26e;
+            margin: 0;
+        }
+
+        /* Author Section Styling */
+        .author-section {
+            max-width: 800px;
+            margin: 40px auto 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            border-left: 4px solid #18d26e;
+        }
+
+        .author-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-bottom: 10px;
+        }
+
+        .author-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .author-date {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .author-bio {
+            font-size: 15px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #18d26e;
+            color: #040404;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Blog Content -->
+    <main style="margin-top: 40px;">
+        <h1 style="text-align: center; font-size: 36px; font-weight: 700; margin-bottom: 10px;">How to Remove Sensitive Information from Git History</h1>
+        <p style="text-align: center; font-size: 16px; color: rgba(255, 255, 255, 0.6); margin-bottom: 40px;">12th January 2026</p>
+        <section>
+            <h2>Introduction</h2>
+            <p>
+                We've all been there: you accidentally commit sensitive information like API keys, passwords, or credentials to your Git repository. Even if you quickly remove it in the next commit, the damage is done—the sensitive data remains in your Git history forever, accessible to anyone with repository access.
+            </p>
+            <p>
+                Fortunately, there's a way to permanently remove this sensitive information from your repository's history. In this comprehensive guide, I'll walk you through the process of using <code>git filter-repo</code> to scrub sensitive data from your Git history safely and effectively.
+            </p>
+        </section>
+
+        <section>
+            <h2>Why Is This Necessary?</h2>
+            <p>
+                When you commit a file to Git, it becomes part of the repository's permanent history. Simply deleting the file or removing the sensitive line in a subsequent commit doesn't actually remove it from the repository—it only removes it from the current state. The data remains accessible through:
+            </p>
+            <ul>
+                <li>Git history (<code>git log</code>, <code>git show</code>)</li>
+                <li>Historical commits and branches</li>
+                <li>Repository clones that others may have</li>
+                <li>GitHub's commit history and search features</li>
+            </ul>
+            <p>
+                This is why properly removing sensitive data requires rewriting the repository's entire history.
+            </p>
+        </section>
+
+        <section>
+            <h2>Prerequisites</h2>
+            <p>Before starting, ensure you have:</p>
+            <ul>
+                <li><strong>Git installed:</strong> Version 2.22 or higher</li>
+                <li><strong>git filter-repo:</strong> This powerful tool replaces the older <code>git filter-branch</code></li>
+                <li><strong>Repository access:</strong> Admin rights to force-push to the remote repository</li>
+                <li><strong>Team coordination:</strong> All collaborators must be informed of the upcoming history rewrite</li>
+            </ul>
+
+            <h3>Installing git filter-repo</h3>
+            <p>On most systems, you can install <code>git filter-repo</code> using:</p>
+            <pre><code># Using pip
+pip install git-filter-repo
+
+# On macOS with Homebrew
+brew install git-filter-repo
+
+# On Ubuntu/Debian
+sudo apt-get install git-filter-repo</code></pre>
+        </section>
+
+        <section>
+            <h2>Step-by-Step Guide to Remove Sensitive Data</h2>
+
+            <h3><span class="step-number">1</span>Prepare a Fresh Clone</h3>
+            <p>
+                Always operate on a fresh clone to avoid accidental corruption of your working repository. This ensures you have a clean slate and can easily restart if something goes wrong.
+            </p>
+            <pre><code>git clone git@github.com:USERNAME/REPO.git
+cd REPO</code></pre>
+
+            <h3><span class="step-number">2</span>Create a Secrets File</h3>
+            <p>
+                Create a file listing all the exact strings you want to remove, one per line. This file will be used by <code>git filter-repo</code> to identify and replace sensitive information throughout your repository's history.
+            </p>
+            <pre><code># Example: If your secret is in task.txt
+echo "password: testing git history removal" > secrets-to-remove.txt
+
+# You can add multiple secrets
+echo "API_KEY=abc123xyz789" >> secrets-to-remove.txt
+echo "SECRET_TOKEN=super_secret_value" >> secrets-to-remove.txt</code></pre>
+
+            <h3><span class="step-number">3</span>Run git filter-repo</h3>
+            <p>
+                Now comes the main step: running <code>git filter-repo</code> to replace all occurrences of the sensitive data throughout your repository's entire history.
+            </p>
+            <pre><code>git filter-repo --replace-text secrets-to-remove.txt</code></pre>
+
+            <p>
+                By default, <code>git filter-repo</code> will replace matched strings with <code>***REMOVED***</code>. If you want to specify custom replacement text, you can format your secrets file like this:
+            </p>
+            <pre><code>password: testing git history removal==>PASSWORD_REDACTED
+API_KEY=abc123xyz789==>EXAMPLE_API_KEY</code></pre>
+
+            <h3><span class="step-number">4</span>Add the Remote Back</h3>
+            <p>
+                After running <code>git filter-repo</code>, you need to re-add your remote repository:
+            </p>
+            <pre><code>git remote add origin git@github.com:USERNAME/REPO.git
+
+# Verify the remote was added correctly
+git remote -v</code></pre>
+
+            <p>You should see output like:</p>
+            <pre><code>origin  git@github.com:USERNAME/REPO.git (fetch)
+origin  git@github.com:USERNAME/REPO.git (push)</code></pre>
+
+            <h3><span class="step-number">5</span>Force Push the Cleaned History</h3>
+            <p>
+                Now it's time to push your cleaned repository history back to GitHub. This step requires force-pushing, which will overwrite the remote repository's history.
+            </p>
+
+            <pre><code># Push all branches
+git push origin --force --all
+
+# Push all tags
+git push origin --force --tags</code></pre>
+
+            <p>
+                The <code>--all</code> flag ensures all branches are pushed, and <code>--tags</code> ensures all tags are updated as well.
+            </p>
+
+            <h3><span class="step-number">6</span>Verify Removal</h3>
+            <p>
+                After pushing, it's crucial to verify that the sensitive data has been completely removed. Use Git's search functionality to look for any remaining traces:
+            </p>
+            <pre><code>git log -S"password: testing git history removal" --all</code></pre>
+
+            <p>
+                If the secret was successfully removed, this command should return no results. You can also search for other patterns:
+            </p>
+            <pre><code># Search for specific patterns
+git log -S"API_KEY" --all
+git log -S"SECRET_TOKEN" --all
+
+# Search in all file contents
+git grep "password: testing" $(git rev-list --all)</code></pre>
+
+            <h3><span class="step-number">7</span>Inform Collaborators</h3>
+            <p>
+                All collaborators must reset their local repositories because the history has been rewritten. Share these instructions with your team:
+            </p>
+            <pre><code># For collaborators: Reset your local repository
+git fetch origin
+git reset --hard origin/main
+
+# If they were working on a feature branch
+git fetch origin
+git checkout feature-branch
+git reset --hard origin/feature-branch</code></pre>
+        </section>
+
+        <section>
+            <h2>Additional Considerations</h2>
+
+            <h3>Rotating Compromised Credentials</h3>
+            <p>
+                Removing sensitive data from Git history is just the first step. You must also:
+            </p>
+            <ul>
+                <li>Immediately rotate all exposed credentials (change passwords, regenerate API keys)</li>
+                <li>Review access logs for any unauthorized usage</li>
+                <li>Update any systems or services that use the compromised credentials</li>
+                <li>Consider implementing secret scanning tools to prevent future incidents</li>
+            </ul>
+
+            <h3>Preventing Future Incidents</h3>
+            <p>
+                To avoid accidentally committing sensitive information in the future:
+            </p>
+            <ul>
+                <li>Use <strong>.gitignore</strong> files to exclude sensitive configuration files</li>
+                <li>Implement <strong>pre-commit hooks</strong> to scan for secrets before committing</li>
+                <li>Use <strong>environment variables</strong> or secret management tools (AWS Secrets Manager, HashiCorp Vault)</li>
+                <li>Enable <strong>GitHub Secret Scanning</strong> for your repositories</li>
+                <li>Use <strong>git-secrets</strong> or <strong>truffleHog</strong> to detect secrets in commits</li>
+                <li>Implement code review processes to catch sensitive data before merging</li>
+            </ul>
+
+            <h3>Alternative Approaches</h3>
+            <p>
+                Depending on your situation, you might consider:
+            </p>
+            <ul>
+                <li><strong>BFG Repo-Cleaner:</strong> A faster alternative to git filter-repo for large repositories</li>
+                <li><strong>Starting fresh:</strong> For repositories with extensive contamination, creating a new repository might be simpler</li>
+                <li><strong>GitHub Support:</strong> For public repositories, contact GitHub support to fully remove cached data</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Common Pitfalls and Troubleshooting</h2>
+
+            <h3>Issue: Remote Rejection During Force Push</h3>
+            <p>
+                If you receive an error like "remote: error: GH006: Protected branch update failed", your branch has protection rules enabled. You'll need to:
+            </p>
+            <ul>
+                <li>Temporarily disable branch protection rules in repository settings</li>
+                <li>Perform the force push</li>
+                <li>Re-enable branch protection rules</li>
+            </ul>
+
+            <h3>Issue: Large Repository Size After Cleanup</h3>
+            <p>
+                If your repository is still large after removing files, you may need to run garbage collection:
+            </p>
+            <pre><code>git reflog expire --expire=now --all
+git gc --prune=now --aggressive</code></pre>
+
+            <h3>Issue: Secrets Still Appearing in Search</h3>
+            <p>
+                GitHub caches repository data. After cleaning your history:
+            </p>
+            <ul>
+                <li>Wait 24-48 hours for GitHub's cache to clear</li>
+                <li>For immediate removal, contact GitHub Support</li>
+                <li>Consider making the repository private temporarily</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            <p>
+                Accidentally committing sensitive information to a Git repository can be a serious security issue, but it's not irreversible. By following this comprehensive guide, you can permanently remove sensitive data from your Git history using <code>git filter-repo</code>.
+            </p>
+            <p>
+                Most importantly, implement preventive measures to ensure this never happens again. Use environment variables, secret management tools, and pre-commit hooks to catch sensitive data before it enters your repository.
+            </p>
+            <p>
+                Stay secure, and happy coding!
+            </p>
+        </section>
+
+        <section class="author-section">
+            <h3>Written By</h3>
+            <p class="author-name">Ujwal Budha</p>
+            <p class="author-date">Published: 12th January 2026</p>
+            <p class="author-bio">
+                Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd., he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and helping others navigate their cloud journey.
+            </p>
+        </section>
+    </main>
+
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
