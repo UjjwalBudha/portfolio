@@ -1,0 +1,89 @@
+name: Update Sitemap
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'blogs/*.html'
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Generate Sitemap
+        run: |
+          python3 << 'PYTHON_SCRIPT'
+          import os
+          import glob
+          from datetime import datetime
+          
+          BASE_URL = "https://ujwalbudha.com.np"
+          blog_files = sorted(glob.glob("blogs/*.html"))
+          
+          sitemap = '''<?xml version="1.0" encoding="UTF-8"?>
+          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <!-- Homepage -->
+            <url>
+              <loc>{}/</loc>
+              <lastmod>{}</lastmod>
+              <changefreq>weekly</changefreq>
+              <priority>1.0</priority>
+            </url>
+            
+            <!-- Blog Posts -->
+          '''.format(BASE_URL, datetime.now().strftime('%Y-%m-%d'))
+          
+          for blog_file in blog_files:
+              filename = os.path.basename(blog_file)
+              lastmod = datetime.fromtimestamp(os.path.getmtime(blog_file)).strftime('%Y-%m-%d')
+              sitemap += '''  <url>
+              <loc>{}/blogs/{}</loc>
+              <lastmod>{}</lastmod>
+              <changefreq>monthly</changefreq>
+              <priority>0.8</priority>
+            </url>
+          '''.format(BASE_URL, filename, lastmod)
+          
+          sitemap += '''  
+            <!-- Other Pages -->
+            <url>
+              <loc>{}/portfolio-details.html</loc>
+              <lastmod>{}</lastmod>
+              <changefreq>monthly</changefreq>
+              <priority>0.6</priority>
+            </url>
+          </urlset>
+          '''.format(BASE_URL, datetime.now().strftime('%Y-%m-%d'))
+          
+          with open('sitemap.xml', 'w') as f:
+              f.write(sitemap)
+          
+          print(f"✅ Sitemap generated with {len(blog_files)} blog posts")
+          PYTHON_SCRIPT
+      
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          if git diff --staged --quiet; then
+            echo "No changes to sitemap"
+          else
+            git commit -m "chore: auto-update sitemap [skip ci]"
+            git push
+            echo "✅ Sitemap updated and pushed"
+          fi
