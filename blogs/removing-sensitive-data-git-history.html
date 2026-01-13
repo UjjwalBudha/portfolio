@@ -8,21 +8,86 @@
     <meta
         content="Learn how to permanently remove passwords, API keys, and other sensitive data from Git repository history using git filter-repo. Step-by-step guide with safety checks."
         name="description">
-    <meta content="Git, Git History, Security, API Keys, Passwords, git filter-repo, GitHub, Version Control, Repository Cleanup, Data Security"
+    <meta
+        content="Git, Git History, Security, API Keys, Passwords, git filter-repo, GitHub, Version Control, Repository Cleanup, Data Security"
         name="keywords">
+    <meta name="author" content="Ujwal Budha">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ujwalbudha.com.np/blogs/removing-sensitive-data-git-history.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ujwalbudha.com.np/blogs/removing-sensitive-data-git-history.html">
+    <meta property="og:title" content="How to Remove Sensitive Information from Git History: Complete Guide">
+    <meta property="og:description"
+        content="Learn how to permanently remove passwords, API keys, and other sensitive data from Git repository history using git filter-repo. Step-by-step guide with safety checks.">
+    <meta property="og:image" content="https://ujwalbudha.com.np/blogs/src/blog10/git.png">
+    <meta property="og:site_name" content="Ujwal Budha Portfolio">
+    <meta property="article:published_time" content="2026-01-12T00:00:00+05:45">
+    <meta property="article:modified_time" content="2026-01-12T00:00:00+05:45">
+    <meta property="article:author" content="Ujwal Budha">
+    <meta property="article:section" content="DevOps">
+    <meta property="article:tag" content="Git">
+    <meta property="article:tag" content="Security">
+    <meta property="article:tag" content="Version Control">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ujwalbudha.com.np/blogs/removing-sensitive-data-git-history.html">
+    <meta name="twitter:title" content="How to Remove Sensitive Information from Git History: Complete Guide">
+    <meta name="twitter:description"
+        content="Learn how to permanently remove passwords, API keys, and other sensitive data from Git repository history using git filter-repo.">
+    <meta name="twitter:image" content="https://ujwalbudha.com.np/blogs/src/blog10/git.png">
+    <meta name="twitter:creator" content="@ujjwal_budha">
+
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
-    
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQNVWBVCCD"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-CQNVWBVCCD');
     </script>
-    
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "How to Remove Sensitive Information from Git History: Complete Guide",
+      "description": "Learn how to permanently remove passwords, API keys, and other sensitive data from Git repository history using git filter-repo. Step-by-step guide with safety checks.",
+      "image": "https://ujwalbudha.com.np/blogs/src/blog10/git.png",
+      "datePublished": "2026-01-12T00:00:00+05:45",
+      "dateModified": "2026-01-12T00:00:00+05:45",
+      "author": {
+        "@type": "Person",
+        "name": "Ujwal Budha",
+        "url": "https://ujwalbudha.com.np",
+        "jobTitle": "DevOps Engineer",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Adex International Pvt. Ltd."
+        }
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Ujwal Budha",
+        "url": "https://ujwalbudha.com.np"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ujwalbudha.com.np/blogs/removing-sensitive-data-git-history.html"
+      },
+      "keywords": ["Git", "Git History", "Security", "API Keys", "Passwords", "git filter-repo", "GitHub", "Version Control", "Repository Cleanup", "Data Security"],
+      "articleSection": "DevOps",
+      "inLanguage": "en-US"
+    }
+    </script>
+
     <style>
         body {
             font-family: "Raleway", sans-serif;
@@ -278,22 +343,31 @@
 <body>
     <!-- Blog Content -->
     <main style="margin-top: 40px;">
-        <h1 style="text-align: center; font-size: 36px; font-weight: 700; margin-bottom: 10px;">How to Remove Sensitive Information from Git History</h1>
-        <p style="text-align: center; font-size: 16px; color: rgba(255, 255, 255, 0.6); margin-bottom: 40px;">12th January 2026</p>
+        <h1 style="text-align: center; font-size: 36px; font-weight: 700; margin-bottom: 10px;">How to Remove Sensitive
+            Information from Git History</h1>
+        <p style="text-align: center; font-size: 16px; color: rgba(255, 255, 255, 0.6); margin-bottom: 40px;">12th
+            January 2026</p>
         <section>
             <h2>Introduction</h2>
             <p>
-                We've all been there: you accidentally commit sensitive information like API keys, passwords, or credentials to your Git repository. Even if you quickly remove it in the next commit, the damage is done—the sensitive data remains in your Git history forever, accessible to anyone with repository access.
+                We've all been there: you accidentally commit sensitive information like API keys, passwords, or
+                credentials to your Git repository. Even if you quickly remove it in the next commit, the damage is
+                done—the sensitive data remains in your Git history forever, accessible to anyone with repository
+                access.
             </p>
             <p>
-                Fortunately, there's a way to permanently remove this sensitive information from your repository's history. In this comprehensive guide, I'll walk you through the process of using <code>git filter-repo</code> to scrub sensitive data from your Git history safely and effectively.
+                Fortunately, there's a way to permanently remove this sensitive information from your repository's
+                history. In this comprehensive guide, I'll walk you through the process of using
+                <code>git filter-repo</code> to scrub sensitive data from your Git history safely and effectively.
             </p>
         </section>
 
         <section>
             <h2>Why Is This Necessary?</h2>
             <p>
-                When you commit a file to Git, it becomes part of the repository's permanent history. Simply deleting the file or removing the sensitive line in a subsequent commit doesn't actually remove it from the repository—it only removes it from the current state. The data remains accessible through:
+                When you commit a file to Git, it becomes part of the repository's permanent history. Simply deleting
+                the file or removing the sensitive line in a subsequent commit doesn't actually remove it from the
+                repository—it only removes it from the current state. The data remains accessible through:
             </p>
             <ul>
                 <li>Git history (<code>git log</code>, <code>git show</code>)</li>
@@ -311,9 +385,11 @@
             <p>Before starting, ensure you have:</p>
             <ul>
                 <li><strong>Git installed:</strong> Version 2.22 or higher</li>
-                <li><strong>git filter-repo:</strong> This powerful tool replaces the older <code>git filter-branch</code></li>
+                <li><strong>git filter-repo:</strong> This powerful tool replaces the older
+                    <code>git filter-branch</code></li>
                 <li><strong>Repository access:</strong> Admin rights to force-push to the remote repository</li>
-                <li><strong>Team coordination:</strong> All collaborators must be informed of the upcoming history rewrite</li>
+                <li><strong>Team coordination:</strong> All collaborators must be informed of the upcoming history
+                    rewrite</li>
             </ul>
 
             <h3>Installing git filter-repo</h3>
@@ -333,14 +409,17 @@ sudo apt-get install git-filter-repo</code></pre>
 
             <h3><span class="step-number">1</span>Prepare a Fresh Clone</h3>
             <p>
-                Always operate on a fresh clone to avoid accidental corruption of your working repository. This ensures you have a clean slate and can easily restart if something goes wrong.
+                Always operate on a fresh clone to avoid accidental corruption of your working repository. This ensures
+                you have a clean slate and can easily restart if something goes wrong.
             </p>
             <pre><code>git clone git@github.com:USERNAME/REPO.git
 cd REPO</code></pre>
 
             <h3><span class="step-number">2</span>Create a Secrets File</h3>
             <p>
-                Create a file listing all the exact strings you want to remove, one per line. This file will be used by <code>git filter-repo</code> to identify and replace sensitive information throughout your repository's history.
+                Create a file listing all the exact strings you want to remove, one per line. This file will be used by
+                <code>git filter-repo</code> to identify and replace sensitive information throughout your repository's
+                history.
             </p>
             <pre><code># Example: If your secret is in task.txt
 echo "password: testing git history removal" > secrets-to-remove.txt
@@ -351,12 +430,14 @@ echo "SECRET_TOKEN=super_secret_value" >> secrets-to-remove.txt</code></pre>
 
             <h3><span class="step-number">3</span>Run git filter-repo</h3>
             <p>
-                Now comes the main step: running <code>git filter-repo</code> to replace all occurrences of the sensitive data throughout your repository's entire history.
+                Now comes the main step: running <code>git filter-repo</code> to replace all occurrences of the
+                sensitive data throughout your repository's entire history.
             </p>
             <pre><code>git filter-repo --replace-text secrets-to-remove.txt</code></pre>
 
             <p>
-                By default, <code>git filter-repo</code> will replace matched strings with <code>***REMOVED***</code>. If you want to specify custom replacement text, you can format your secrets file like this:
+                By default, <code>git filter-repo</code> will replace matched strings with <code>***REMOVED***</code>.
+                If you want to specify custom replacement text, you can format your secrets file like this:
             </p>
             <pre><code>password: testing git history removal==>PASSWORD_REDACTED
 API_KEY=abc123xyz789==>EXAMPLE_API_KEY</code></pre>
@@ -376,7 +457,8 @@ origin  git@github.com:USERNAME/REPO.git (push)</code></pre>
 
             <h3><span class="step-number">5</span>Force Push the Cleaned History</h3>
             <p>
-                Now it's time to push your cleaned repository history back to GitHub. This step requires force-pushing, which will overwrite the remote repository's history.
+                Now it's time to push your cleaned repository history back to GitHub. This step requires force-pushing,
+                which will overwrite the remote repository's history.
             </p>
 
             <pre><code># Push all branches
@@ -386,17 +468,20 @@ git push origin --force --all
 git push origin --force --tags</code></pre>
 
             <p>
-                The <code>--all</code> flag ensures all branches are pushed, and <code>--tags</code> ensures all tags are updated as well.
+                The <code>--all</code> flag ensures all branches are pushed, and <code>--tags</code> ensures all tags
+                are updated as well.
             </p>
 
             <h3><span class="step-number">6</span>Verify Removal</h3>
             <p>
-                After pushing, it's crucial to verify that the sensitive data has been completely removed. Use Git's search functionality to look for any remaining traces:
+                After pushing, it's crucial to verify that the sensitive data has been completely removed. Use Git's
+                search functionality to look for any remaining traces:
             </p>
             <pre><code>git log -S"password: testing git history removal" --all</code></pre>
 
             <p>
-                If the secret was successfully removed, this command should return no results. You can also search for other patterns:
+                If the secret was successfully removed, this command should return no results. You can also search for
+                other patterns:
             </p>
             <pre><code># Search for specific patterns
 git log -S"API_KEY" --all
@@ -407,7 +492,8 @@ git grep "password: testing" $(git rev-list --all)</code></pre>
 
             <h3><span class="step-number">7</span>Inform Collaborators</h3>
             <p>
-                All collaborators must reset their local repositories because the history has been rewritten. Share these instructions with your team:
+                All collaborators must reset their local repositories because the history has been rewritten. Share
+                these instructions with your team:
             </p>
             <pre><code># For collaborators: Reset your local repository
 git fetch origin
@@ -440,7 +526,8 @@ git reset --hard origin/feature-branch</code></pre>
             <ul>
                 <li>Use <strong>.gitignore</strong> files to exclude sensitive configuration files</li>
                 <li>Implement <strong>pre-commit hooks</strong> to scan for secrets before committing</li>
-                <li>Use <strong>environment variables</strong> or secret management tools (AWS Secrets Manager, HashiCorp Vault)</li>
+                <li>Use <strong>environment variables</strong> or secret management tools (AWS Secrets Manager,
+                    HashiCorp Vault)</li>
                 <li>Enable <strong>GitHub Secret Scanning</strong> for your repositories</li>
                 <li>Use <strong>git-secrets</strong> or <strong>truffleHog</strong> to detect secrets in commits</li>
                 <li>Implement code review processes to catch sensitive data before merging</li>
@@ -451,9 +538,12 @@ git reset --hard origin/feature-branch</code></pre>
                 Depending on your situation, you might consider:
             </p>
             <ul>
-                <li><strong>BFG Repo-Cleaner:</strong> A faster alternative to git filter-repo for large repositories</li>
-                <li><strong>Starting fresh:</strong> For repositories with extensive contamination, creating a new repository might be simpler</li>
-                <li><strong>GitHub Support:</strong> For public repositories, contact GitHub support to fully remove cached data</li>
+                <li><strong>BFG Repo-Cleaner:</strong> A faster alternative to git filter-repo for large repositories
+                </li>
+                <li><strong>Starting fresh:</strong> For repositories with extensive contamination, creating a new
+                    repository might be simpler</li>
+                <li><strong>GitHub Support:</strong> For public repositories, contact GitHub support to fully remove
+                    cached data</li>
             </ul>
         </section>
 
@@ -462,7 +552,8 @@ git reset --hard origin/feature-branch</code></pre>
 
             <h3>Issue: Remote Rejection During Force Push</h3>
             <p>
-                If you receive an error like "remote: error: GH006: Protected branch update failed", your branch has protection rules enabled. You'll need to:
+                If you receive an error like "remote: error: GH006: Protected branch update failed", your branch has
+                protection rules enabled. You'll need to:
             </p>
             <ul>
                 <li>Temporarily disable branch protection rules in repository settings</li>
@@ -491,10 +582,14 @@ git gc --prune=now --aggressive</code></pre>
         <section>
             <h2>Conclusion</h2>
             <p>
-                Accidentally committing sensitive information to a Git repository can be a serious security issue, but it's not irreversible. By following this comprehensive guide, you can permanently remove sensitive data from your Git history using <code>git filter-repo</code>.
+                Accidentally committing sensitive information to a Git repository can be a serious security issue, but
+                it's not irreversible. By following this comprehensive guide, you can permanently remove sensitive data
+                from your Git history using <code>git filter-repo</code>.
             </p>
             <p>
-                Most importantly, implement preventive measures to ensure this never happens again. Use environment variables, secret management tools, and pre-commit hooks to catch sensitive data before it enters your repository.
+                Most importantly, implement preventive measures to ensure this never happens again. Use environment
+                variables, secret management tools, and pre-commit hooks to catch sensitive data before it enters your
+                repository.
             </p>
             <p>
                 Stay secure, and happy coding!
@@ -506,7 +601,11 @@ git gc --prune=now --aggressive</code></pre>
             <p class="author-name">Ujwal Budha</p>
             <p class="author-date">Published: 12th January 2026</p>
             <p class="author-bio">
-                Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd., he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and helping others navigate their cloud journey.
+                Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible,
+                Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd.,
+                he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS
+                Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and
+                helping others navigate their cloud journey.
             </p>
         </section>
     </main>

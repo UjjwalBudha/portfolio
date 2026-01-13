@@ -5,9 +5,35 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Ujwal Budha Portfolio</title>
-  <meta content="" name="descriptison">
-  <meta content="" name="keywords">
+  <title>Ujwal Budha - Cloud & DevOps Engineer | AWS Solutions Architect</title>
+  <meta
+    content="Ujwal Budha is a passionate Cloud & DevOps Engineer specializing in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. AWS Certified Solution Architect sharing knowledge through technical blogs on cloud infrastructure and automation."
+    name="description">
+  <meta
+    content="Ujwal Budha, Cloud Engineer, DevOps Engineer, AWS, Terraform, Ansible, Docker, Kubernetes, CI/CD, GitHub Actions, AWS Solutions Architect, Cloud Infrastructure, Nepal DevOps"
+    name="keywords">
+  <meta name="author" content="Ujwal Budha">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ujwalbudha.com.np/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ujwalbudha.com.np/">
+  <meta property="og:title" content="Ujwal Budha - Cloud & DevOps Engineer | AWS Solutions Architect">
+  <meta property="og:description"
+    content="Passionate Cloud & DevOps Engineer specializing in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. AWS Certified Solution Architect sharing knowledge through technical blogs.">
+  <meta property="og:image" content="https://ujwalbudha.com.np/assets/img/me.jpg">
+  <meta property="og:site_name" content="Ujwal Budha Portfolio">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://ujwalbudha.com.np/">
+  <meta name="twitter:title" content="Ujwal Budha - Cloud & DevOps Engineer | AWS Solutions Architect">
+  <meta name="twitter:description"
+    content="Passionate Cloud & DevOps Engineer specializing in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. AWS Certified Solution Architect.">
+  <meta name="twitter:image" content="https://ujwalbudha.com.np/assets/img/me.jpg">
+  <meta name="twitter:creator" content="@ujjwal_budha">
   <link
     href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i"
     rel="stylesheet">
@@ -21,15 +47,60 @@
   <link href="assets/css/style.css" rel="stylesheet">
 
   <link rel="shortcut icon" href="assets/img/panda.jpg">
-  
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQNVWBVCCD"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
     gtag('config', 'G-CQNVWBVCCD');
+  </script>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ujwal Budha",
+    "url": "https://ujwalbudha.com.np",
+    "image": "https://ujwalbudha.com.np/assets/img/me.jpg",
+    "jobTitle": "DevOps Engineer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Adex International Pvt. Ltd."
+    },
+    "description": "Passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines.",
+    "email": "ujjwal.budha07@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kapan",
+      "addressRegion": "Kathmandu",
+      "addressCountry": "NP"
+    },
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "Texas International College"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/ujwal-budha/",
+      "https://github.com/UjjwalBudha",
+      "https://www.facebook.com/UjwalBudha07/",
+      "https://www.instagram.com/ujjwal_budha/"
+    ],
+    "knowsAbout": [
+      "AWS",
+      "DevOps",
+      "Terraform",
+      "Ansible",
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "GitHub Actions",
+      "Cloud Infrastructure"
+    ]
+  }
   </script>
 </head>
 
@@ -260,38 +331,52 @@
     <div class="container">
       <div class="section-title">
         <h2>Resume</h2>
-        <p class="resume-text">Check My Resume <button class="resume-button" onclick="downloadResume()">Download</button>
+        <p class="resume-text">Check My Resume <button class="resume-button"
+            onclick="downloadResume()">Download</button>
         </p>
       </div>
       <div class="row">
         <div class="col-lg-6">
           <h3 class="resume-title">Summary</h3>
           <div class="resume-item pb-0">
-            <p><em>DevOps Engineer with two years of experience building and automating cloud infrastructure, CI/CD pipelines,
-                and container orchestration platforms. Focused on improving system reliability, reducing operational overhead,
-                and implementing observability practices to ensure high availability and rapid incident response in production
+            <p><em>DevOps Engineer with two years of experience building and automating cloud infrastructure, CI/CD
+                pipelines,
+                and container orchestration platforms. Focused on improving system reliability, reducing operational
+                overhead,
+                and implementing observability practices to ensure high availability and rapid incident response in
+                production
                 environments.</em></p>
           </div>
           <h3 class="resume-title">Projects</h3>
           <div class="resume-item">
             <h4>Infix - <a href="https://infix.cloud/" target="_blank" style="color: #18d26e;">infix.cloud</a></h4>
             <ul>
-              <li>Built and operated a highly available Kubernetes cluster using kubeadm, configuring multiple control plane nodes, etcd, and core components.</li>
-              <li>Deployed and managed application workloads using Helm, enabling standardized, versioned releases with rolling updates and rollback capabilities.</li>
-              <li>Configured Kubernetes networking components, including CNI, Services, and Ingress controllers for reliable internal communication and external traffic routing.</li>
-              <li>Enabled zero-downtime deployments by implementing automated CI/CD workflows with rollback capabilities.</li>
-              <li>Implemented cluster reliability and scaling mechanisms, including liveness/readiness probes, pod anti-affinity, and horizontal scaling strategies.</li>
-              <li>Enforced operational and resource governance through RBAC, namespaces, ConfigMaps, Secrets, and CPU/memory requests and limits.</li>
+              <li>Built and operated a highly available Kubernetes cluster using kubeadm, configuring multiple control
+                plane nodes, etcd, and core components.</li>
+              <li>Deployed and managed application workloads using Helm, enabling standardized, versioned releases with
+                rolling updates and rollback capabilities.</li>
+              <li>Configured Kubernetes networking components, including CNI, Services, and Ingress controllers for
+                reliable internal communication and external traffic routing.</li>
+              <li>Enabled zero-downtime deployments by implementing automated CI/CD workflows with rollback
+                capabilities.</li>
+              <li>Implemented cluster reliability and scaling mechanisms, including liveness/readiness probes, pod
+                anti-affinity, and horizontal scaling strategies.</li>
+              <li>Enforced operational and resource governance through RBAC, namespaces, ConfigMaps, Secrets, and
+                CPU/memory requests and limits.</li>
             </ul>
           </div>
           <div class="resume-item">
             <h4>Lasius - <a href="https://lasius.io/" target="_blank" style="color: #18d26e;">lasius.io</a></h4>
             <ul>
-              <li>Deployed Dev, Staging, and Prod AWS infrastructure with Terraform (ECS Fargate, ALB, Aurora, Redis, ECR), ensuring high availability.</li>
-              <li>Implemented AWS Secrets Manager for secure secret injection into containers, eliminating hardcoded credentials and improving security compliance.</li>
+              <li>Deployed Dev, Staging, and Prod AWS infrastructure with Terraform (ECS Fargate, ALB, Aurora, Redis,
+                ECR), ensuring high availability.</li>
+              <li>Implemented AWS Secrets Manager for secure secret injection into containers, eliminating hardcoded
+                credentials and improving security compliance.</li>
               <li>Automated CI/CD pipelines with GitHub Actions, enabling automated rollbacks.</li>
-              <li>Established service discovery, security groups, and IAM roles, enforcing least-privilege access for microservices.</li>
-              <li>Created architecture documentation and runbooks, improving handover efficiency and operational consistency.</li>
+              <li>Established service discovery, security groups, and IAM roles, enforcing least-privilege access for
+                microservices.</li>
+              <li>Created architecture documentation and runbooks, improving handover efficiency and operational
+                consistency.</li>
             </ul>
           </div>
           <h3 class="resume-title">Training and Certifications</h3>
@@ -327,17 +412,28 @@
             <p><em>DevOps Engineer</em></p>
             <p>
             <ul>
-              <li>Architected and managed multi-environment cloud infrastructure (Dev, Staging, Prod) using Terraform and Ansible, ensuring infrastructure state consistency.</li>
-              <li>Engineered robust CI/CD pipelines using GitHub Actions, enabling zero-downtime deployments for microservices on AWS ECS Fargate.</li>
-              <li>Orchestrated high-availability Kubernetes clusters using Kubeadm and Helm, implementing auto-scaling, self-healing mechanisms, and Ingress controllers.</li>
-              <li>Developed reusable Terraform modules for OpenSearch deployment, encapsulating best practices for domain configuration, access policies, and encryption settings.</li>
-              <li>Hardened cloud security posture by implementing AWS Secrets Manager to eliminate hardcoded credentials and enforcing IAM least-privilege policies.</li>
-              <li>Implemented a comprehensive observability stack using Prometheus, Grafana, and OpenSearch, creating custom dashboards that reduced Mean Time to Resolution (MTTR).</li>
-              <li>Optimized database architecture for Amazon Aurora and Redis, implementing automated backups, read replicas, and connection pooling.</li>
-              <li>Led the containerization strategy using Docker and ECR, standardizing runtime environments across local, staging, and production.</li>
-              <li>Conducted infrastructure cost analysis and rightsizing, utilizing AWS cost explorer and lifecycle policies to optimize resource usage.</li>
-              <li>Streamlined application logging architecture using AWS CloudWatch Logs and Fluentd, centralizing log aggregation across distributed services.</li>
-              <li>Established disaster recovery runbooks and conducted regular failover drills, ensuring business continuity and maintaining RPO/RTO targets.</li>
+              <li>Architected and managed multi-environment cloud infrastructure (Dev, Staging, Prod) using Terraform
+                and Ansible, ensuring infrastructure state consistency.</li>
+              <li>Engineered robust CI/CD pipelines using GitHub Actions, enabling zero-downtime deployments for
+                microservices on AWS ECS Fargate.</li>
+              <li>Orchestrated high-availability Kubernetes clusters using Kubeadm and Helm, implementing auto-scaling,
+                self-healing mechanisms, and Ingress controllers.</li>
+              <li>Developed reusable Terraform modules for OpenSearch deployment, encapsulating best practices for
+                domain configuration, access policies, and encryption settings.</li>
+              <li>Hardened cloud security posture by implementing AWS Secrets Manager to eliminate hardcoded credentials
+                and enforcing IAM least-privilege policies.</li>
+              <li>Implemented a comprehensive observability stack using Prometheus, Grafana, and OpenSearch, creating
+                custom dashboards that reduced Mean Time to Resolution (MTTR).</li>
+              <li>Optimized database architecture for Amazon Aurora and Redis, implementing automated backups, read
+                replicas, and connection pooling.</li>
+              <li>Led the containerization strategy using Docker and ECR, standardizing runtime environments across
+                local, staging, and production.</li>
+              <li>Conducted infrastructure cost analysis and rightsizing, utilizing AWS cost explorer and lifecycle
+                policies to optimize resource usage.</li>
+              <li>Streamlined application logging architecture using AWS CloudWatch Logs and Fluentd, centralizing log
+                aggregation across distributed services.</li>
+              <li>Established disaster recovery runbooks and conducted regular failover drills, ensuring business
+                continuity and maintaining RPO/RTO targets.</li>
             </ul>
             </p>
           </div>
@@ -349,10 +445,14 @@
             <ul>
               <li>Migrated 10+ applications to AWS, ensuring a seamless transition and minimal disruption.</li>
               <li>Collaborated closely with clients to understand their needs and deliver the expected outcomes.</li>
-              <li>Enforced AWS Tag Policies to identify wasted resources, resulting in optimized spend and improved budget allocation.</li>
-              <li>Enabled zero-downtime deployments by implementing automated CI/CD workflows with immediate rollback capabilities.</li>
-              <li>Architected secure network topologies utilizing custom VPCs, private subnets, and Security Groups to ensure strict traffic isolation and data protection.</li>
-              <li>Conducted research, analysis, and documentation for AWS Service Delivery Program compliance and AWS Competency Program.</li>
+              <li>Enforced AWS Tag Policies to identify wasted resources, resulting in optimized spend and improved
+                budget allocation.</li>
+              <li>Enabled zero-downtime deployments by implementing automated CI/CD workflows with immediate rollback
+                capabilities.</li>
+              <li>Architected secure network topologies utilizing custom VPCs, private subnets, and Security Groups to
+                ensure strict traffic isolation and data protection.</li>
+              <li>Conducted research, analysis, and documentation for AWS Service Delivery Program compliance and AWS
+                Competency Program.</li>
             </ul>
             </p>
           </div>
@@ -415,7 +515,8 @@
               <br><br>
               <h4>Remove Sensitive Data from Git History</h4>
               <p class="blog-date">12th January 2026</p>
-              <p>Learn how to permanently remove passwords, API keys, and sensitive data from Git repository history using git filter-repo...</p>
+              <p>Learn how to permanently remove passwords, API keys, and sensitive data from Git repository history
+                using git filter-repo...</p>
             </div>
           </a>
         </div>
@@ -441,7 +542,8 @@
               <br><br>
               <h4>Building an Effective Knowledge Base for RAG</h4>
               <p class="blog-date">1st December 2025</p>
-              <p>A practical guide to constructing robust knowledge bases for Retrieval-Augmented Generation systems...</p>
+              <p>A practical guide to constructing robust knowledge bases for Retrieval-Augmented Generation systems...
+              </p>
             </div>
           </a>
         </div>

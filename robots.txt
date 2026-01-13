@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ujwalbudha.com.np/sitemap.xml
+
+# Optional: Reduce crawl budget waste on vendor assets
+User-agent: *
+Disallow: /assets/vendor/

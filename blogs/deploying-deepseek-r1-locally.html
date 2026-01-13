@@ -8,21 +8,82 @@
     <meta
         content="Learn how to deploy DeepSeek-r1 LLM models locally on CPU/GPU using Ollama and Open WebUI. Step-by-step guide for 1.5B and 7B parameter models with performance tuning tips."
         name="description">
-    <meta content="DeepSeek-r1, LLM, Local Deployment, Ollama, Open WebUI, AI, Machine Learning, Docker, CPU Deployment, GPU Deployment"
+    <meta
+        content="DeepSeek-r1, LLM, Local Deployment, Ollama, Open WebUI, AI, Machine Learning, Docker, CPU Deployment, GPU Deployment"
         name="keywords">
+    <meta name="author" content="Ujwal Budha">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ujwalbudha.com.np/blogs/deploying-deepseek-r1-locally.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ujwalbudha.com.np/blogs/deploying-deepseek-r1-locally.html">
+    <meta property="og:title" content="How to Deploy DeepSeek-r1 on LLM Locally: Complete Ollama & Open WebUI Guide">
+    <meta property="og:description"
+        content="Learn how to deploy DeepSeek-r1 LLM models locally on CPU/GPU using Ollama and Open WebUI. Step-by-step guide for 1.5B and 7B parameter models.">
+    <meta property="og:image" content="https://ujwalbudha.com.np/blogs/src/blog9/ollama.png">
+    <meta property="og:site_name" content="Ujwal Budha Portfolio">
+    <meta property="article:published_time" content="2025-01-02T00:00:00+05:45">
+    <meta property="article:modified_time" content="2025-01-02T00:00:00+05:45">
+    <meta property="article:author" content="Ujwal Budha">
+    <meta property="article:section" content="AI">
+    <meta property="article:tag" content="DeepSeek">
+    <meta property="article:tag" content="LLM">
+    <meta property="article:tag" content="Ollama">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ujwalbudha.com.np/blogs/deploying-deepseek-r1-locally.html">
+    <meta name="twitter:title" content="How to Deploy DeepSeek-r1 Locally with Ollama">
+    <meta name="twitter:description"
+        content="Step-by-step guide to deploy DeepSeek-r1 LLM models locally using Ollama and Open WebUI.">
+    <meta name="twitter:image" content="https://ujwalbudha.com.np/blogs/src/blog9/ollama.png">
+    <meta name="twitter:creator" content="@ujjwal_budha">
+
     <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="assets/css/style.css" rel="stylesheet">
-    
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQNVWBVCCD"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
 
         gtag('config', 'G-CQNVWBVCCD');
     </script>
-    
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "How to Deploy DeepSeek-r1 on LLM Locally: Complete Ollama & Open WebUI Guide",
+      "description": "Learn how to deploy DeepSeek-r1 LLM models locally on CPU/GPU using Ollama and Open WebUI. Step-by-step guide for 1.5B and 7B parameter models with performance tuning tips.",
+      "image": "https://ujwalbudha.com.np/blogs/src/blog9/ollama.png",
+      "datePublished": "2025-01-02T00:00:00+05:45",
+      "dateModified": "2025-01-02T00:00:00+05:45",
+      "author": {
+        "@type": "Person",
+        "name": "Ujwal Budha",
+        "url": "https://ujwalbudha.com.np",
+        "jobTitle": "DevOps Engineer"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Ujwal Budha",
+        "url": "https://ujwalbudha.com.np"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ujwalbudha.com.np/blogs/deploying-deepseek-r1-locally.html"
+      },
+      "keywords": ["DeepSeek-r1", "LLM", "Local Deployment", "Ollama", "Open WebUI", "AI", "Machine Learning", "Docker"],
+      "articleSection": "AI",
+      "inLanguage": "en-US"
+    }
+    </script>
+
     <style>
         body {
             font-family: "Raleway", sans-serif;
@@ -242,10 +303,14 @@
         <section>
             <h2>Introduction</h2>
             <p>
-                Deploying Large Language Models (LLMs) locally can be challenging, but with DeepSeek-r1, it's now more accessible than ever.
+                Deploying Large Language Models (LLMs) locally can be challenging, but with DeepSeek-r1, it's now more
+                accessible than ever.
             </p>
             <p>
-                In this blog, I'll guide you through deploying a DeepSeek-r1 model on your local CPU/GPU system. We'll focus on deploying both 1.5B and 7B parameter models, depending on your system's capabilities. We'll also optimize the Ollama server to handle multiple concurrent requests and improve its performance. Finally, we'll set up the Open WebUI for better model interaction and management.
+                In this blog, I'll guide you through deploying a DeepSeek-r1 model on your local CPU/GPU system. We'll
+                focus on deploying both 1.5B and 7B parameter models, depending on your system's capabilities. We'll
+                also optimize the Ollama server to handle multiple concurrent requests and improve its performance.
+                Finally, we'll set up the Open WebUI for better model interaction and management.
             </p>
         </section>
 
@@ -272,10 +337,11 @@
 
         <section>
             <h2>Let's start by installing Ollama</h2>
-            
+
             <h3>1. Install Ollama</h3>
             <p>
-                To install Ollama, execute the following command in your terminal to download and run the official installation script:
+                To install Ollama, execute the following command in your terminal to download and run the official
+                installation script:
             </p>
             <pre><code>curl -fsSL https://ollama.com/install.sh | sh</code></pre>
 
@@ -285,11 +351,13 @@
             </div>
 
             <div class="warning-box">
-                <p>⚠️ Since we are running the model on a CPU-based system this warning may appear which is normal and can be avoided</p>
+                <p>⚠️ Since we are running the model on a CPU-based system this warning may appear which is normal and
+                    can be avoided</p>
             </div>
 
             <p>
-                After running above script, Ollama will be installed on your system. Verify the installation by checking the version:
+                After running above script, Ollama will be installed on your system. Verify the installation by checking
+                the version:
             </p>
             <pre><code>ollama --version</code></pre>
 
@@ -302,7 +370,8 @@
         <section>
             <h2>2. Pull the DeepSeek-r1 Models</h2>
             <p>
-                Now that Ollama is installed, let's pull the DeepSeek-r1 models. You can download both the 1.5B and 7B versions using the Ollama CLI:
+                Now that Ollama is installed, let's pull the DeepSeek-r1 models. You can download both the 1.5B and 7B
+                versions using the Ollama CLI:
             </p>
             <pre><code>ollama pull deepseek-r1
 ollama pull deepseek-r1:7b</code></pre>
@@ -321,7 +390,8 @@ ollama pull deepseek-r1:7b</code></pre>
         <section>
             <h2>3. Run the DeepSeek-r1 Models Locally [CLI]</h2>
             <p>
-                After pulling the models, you can run them locally with Ollama. You can start each model using the following commands:
+                After pulling the models, you can run them locally with Ollama. You can start each model using the
+                following commands:
             </p>
             <pre><code>ollama run deepseek-r1
 ollama run deepseek-r1:7b</code></pre>
@@ -344,10 +414,12 @@ ollama run deepseek-r1:7b</code></pre>
         <section>
             <h2>4. Deploy the Ollama WebUI Using Docker</h2>
             <p>
-                To simplify interaction with your models, you can deploy a web-based interface using Docker. This allows you to manage and query your models through a clean, browser-based UI.
+                To simplify interaction with your models, you can deploy a web-based interface using Docker. This allows
+                you to manage and query your models through a clean, browser-based UI.
             </p>
             <p>
-                First, make sure that docker is present in your system if not make sure you install it from here <a href="https://docs.docker.com/engine/install/" target="_blank">Docker Installation</a>
+                First, make sure that docker is present in your system if not make sure you install it from here <a
+                    href="https://docs.docker.com/engine/install/" target="_blank">Docker Installation</a>
             </p>
 
             <div class="image-container">
@@ -359,7 +431,9 @@ ollama run deepseek-r1:7b</code></pre>
         <section>
             <h2>5. Deploy the Open WebUI Using Docker</h2>
             <p>
-                For more efficient model interaction, we'll deploy Open WebUI (formerly known as Ollama Web UI). The following Docker command will map container port 8080 to host port 3000 and ensure the container can communicate with the Ollama server running on your host machine.
+                For more efficient model interaction, we'll deploy Open WebUI (formerly known as Ollama Web UI). The
+                following Docker command will map container port 8080 to host port 3000 and ensure the container can
+                communicate with the Ollama server running on your host machine.
             </p>
             <p>
                 Run the following Docker command:
@@ -372,7 +446,8 @@ ollama run deepseek-r1:7b</code></pre>
             </div>
 
             <p>
-                Now, the WebUI has been successfully deployed which can be accessed at <code>http://localhost:3000</code>
+                Now, the WebUI has been successfully deployed which can be accessed at
+                <code>http://localhost:3000</code>
             </p>
 
             <div class="image-container">
@@ -384,7 +459,8 @@ ollama run deepseek-r1:7b</code></pre>
         <section>
             <h2>6. Advanced Ollama Performance Tuning [ Optional ]</h2>
             <p>
-                For users looking to squeeze extra performance and customize how Ollama handles model inference and resource management, you can adjust several environment variables before starting the Ollama server.
+                For users looking to squeeze extra performance and customize how Ollama handles model inference and
+                resource management, you can adjust several environment variables before starting the Ollama server.
             </p>
             <pre><code>export OLLAMA_FLASH_ATTENTION=1
 export OLLAMA_KV_CACHE_TYPE=q8_0
@@ -395,12 +471,18 @@ export OLLAMA_MAX_QUEUE=1024</code></pre>
 
             <div class="info-box">
                 <ul>
-                    <li><strong>OLLAMA_FLASH_ATTENTION:</strong> Enabling this can boost performance by optimizing attention mechanisms within the model.</li>
-                    <li><strong>OLLAMA_KV_CACHE_TYPE:</strong> This setting manages the key-value caching strategy; <code>q8_0</code> can help reduce memory footprint while maintaining speed.</li>
-                    <li><strong>OLLAMA_KEEP_ALIVE:</strong> This controls connection persistence; setting it to <code>-1</code> disables the timeout.</li>
-                    <li><strong>OLLAMA_MAX_LOADED_MODELS:</strong> Adjust this based on your system's memory capacity to control how many models are loaded concurrently.</li>
-                    <li><strong>OLLAMA_NUM_PARALLEL:</strong> Increasing this value can improve throughput on multi-core systems.</li>
-                    <li><strong>OLLAMA_MAX_QUEUE:</strong> This defines the maximum number of queued requests, useful for high-concurrency environments.</li>
+                    <li><strong>OLLAMA_FLASH_ATTENTION:</strong> Enabling this can boost performance by optimizing
+                        attention mechanisms within the model.</li>
+                    <li><strong>OLLAMA_KV_CACHE_TYPE:</strong> This setting manages the key-value caching strategy;
+                        <code>q8_0</code> can help reduce memory footprint while maintaining speed.</li>
+                    <li><strong>OLLAMA_KEEP_ALIVE:</strong> This controls connection persistence; setting it to
+                        <code>-1</code> disables the timeout.</li>
+                    <li><strong>OLLAMA_MAX_LOADED_MODELS:</strong> Adjust this based on your system's memory capacity to
+                        control how many models are loaded concurrently.</li>
+                    <li><strong>OLLAMA_NUM_PARALLEL:</strong> Increasing this value can improve throughput on multi-core
+                        systems.</li>
+                    <li><strong>OLLAMA_MAX_QUEUE:</strong> This defines the maximum number of queued requests, useful
+                        for high-concurrency environments.</li>
                 </ul>
             </div>
         </section>
@@ -408,7 +490,9 @@ export OLLAMA_MAX_QUEUE=1024</code></pre>
         <section>
             <h2>Conclusion</h2>
             <p>
-                By following this blog post, you can seamlessly set up your local environment to deploy and interact with the DeepSeek-r1 model using Ollama and Open WebUI. You'll be able to harness both the 1.5B and 7B parameter models to their full potential.
+                By following this blog post, you can seamlessly set up your local environment to deploy and interact
+                with the DeepSeek-r1 model using Ollama and Open WebUI. You'll be able to harness both the 1.5B and 7B
+                parameter models to their full potential.
             </p>
             <p>
                 Happy deploying and experimenting with your AI models!
@@ -420,7 +504,11 @@ export OLLAMA_MAX_QUEUE=1024</code></pre>
             <p class="author-name">Ujwal Budha</p>
             <p class="author-date">Published: 2nd january 2025</p>
             <p class="author-bio">
-                Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible, Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd., he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and helping others navigate their cloud journey.
+                Ujwal Budha is a passionate Cloud & DevOps Engineer with hands-on experience in AWS, Terraform, Ansible,
+                Docker, and CI/CD pipelines. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd.,
+                he specializes in building scalable cloud infrastructure and automating deployment workflows. An AWS
+                Certified Solution Architect Associate, Ujwal enjoys sharing his knowledge through technical blogs and
+                helping others navigate their cloud journey.
             </p>
         </section>
     </main>
