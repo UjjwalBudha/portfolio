@@ -84,6 +84,9 @@
     }
     </script>
 
+    <!-- Shared Navigation Bar -->
+    <script src="../assets/js/navbar.js"></script>
+
     <style>
         body {
             font-family: "Raleway", sans-serif;
@@ -474,9 +477,11 @@ export OLLAMA_MAX_QUEUE=1024</code></pre>
                     <li><strong>OLLAMA_FLASH_ATTENTION:</strong> Enabling this can boost performance by optimizing
                         attention mechanisms within the model.</li>
                     <li><strong>OLLAMA_KV_CACHE_TYPE:</strong> This setting manages the key-value caching strategy;
-                        <code>q8_0</code> can help reduce memory footprint while maintaining speed.</li>
+                        <code>q8_0</code> can help reduce memory footprint while maintaining speed.
+                    </li>
                     <li><strong>OLLAMA_KEEP_ALIVE:</strong> This controls connection persistence; setting it to
-                        <code>-1</code> disables the timeout.</li>
+                        <code>-1</code> disables the timeout.
+                    </li>
                     <li><strong>OLLAMA_MAX_LOADED_MODELS:</strong> Adjust this based on your system's memory capacity to
                         control how many models are loaded concurrently.</li>
                     <li><strong>OLLAMA_NUM_PARALLEL:</strong> Increasing this value can improve throughput on multi-core
