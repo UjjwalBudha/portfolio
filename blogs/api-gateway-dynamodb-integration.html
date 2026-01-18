@@ -299,7 +299,10 @@
         table".
       </p>
       <div class="image-container">
-        <img src="src/blog2/dynamodb.png" alt="DynamoDB Table Creation">
+        <picture>
+                    <source srcset="src/blog2/dynamodb.webp" type="image/webp">
+                    <img src="src/blog2/dynamodb.png" alt="DynamoDB Table Creation" loading="lazy">
+                </picture>
       </div>
 
       <h3>2. Set Up IAM Roles and Policies</h3>
@@ -308,7 +311,10 @@
         service" and choose "Lambda" or "API Gateway" depending on your integration method.
       </p>
       <div class="image-container">
-        <img src="src/blog2/iam_role.png" alt="IAM Role Creation">
+        <picture>
+                    <source srcset="src/blog2/iam_role.webp" type="image/webp">
+                    <img src="src/blog2/iam_role.png" alt="IAM Role Creation" loading="lazy">
+                </picture>
       </div>
 
       <h3>3. Set Up API Gateway</h3>
@@ -317,7 +323,10 @@
         Select "New API" and give your API a name. Click on "Create API".
       </p>
       <div class="image-container">
-        <img src="src/blog2/api_gateway.png" alt="API Gateway Creation">
+        <picture>
+                    <source srcset="src/blog2/api_gateway.webp" type="image/webp">
+                    <img src="src/blog2/api_gateway.png" alt="API Gateway Creation" loading="lazy">
+                </picture>
       </div>
 
       <h3>4. Define Resources and Methods</h3>
@@ -331,14 +340,20 @@
         Configure the integration to interact with your DynamoDB table.
       </p>
       <div class="image-container">
-        <img src="src/blog2/get_method.png" alt="GET Method Configuration">
+        <picture>
+                    <source srcset="src/blog2/get_method.webp" type="image/webp">
+                    <img src="src/blog2/get_method.png" alt="GET Method Configuration" loading="lazy">
+                </picture>
       </div>
       <p>
         For POST method, choose "Integration type" as "Lambda Function" (or "AWS Service" if you prefer using DynamoDB
         directly), and configure it to interact with your DynamoDB table to add new movie details.
       </p>
       <div class="image-container">
-        <img src="src/blog2/post_method.png" alt="POST Method Configuration">
+        <picture>
+                    <source srcset="src/blog2/post_method.webp" type="image/webp">
+                    <img src="src/blog2/post_method.png" alt="POST Method Configuration" loading="lazy">
+                </picture>
       </div>
 
       <h3>5. Deploy API</h3>
@@ -348,7 +363,10 @@
         your API.
       </p>
       <div class="image-container">
-        <img src="src/blog2/deploy_api.png" alt="API Deployment">
+        <picture>
+                    <source srcset="src/blog2/deploy_api.webp" type="image/webp">
+                    <img src="src/blog2/deploy_api.png" alt="API Deployment" loading="lazy">
+                </picture>
       </div>
 
       <h3>6. Test Endpoints</h3>
@@ -358,10 +376,16 @@
         entries to the DynamoDB table.
       </p>
       <div class="image-container">
-        <img src="src/blog2/test_get.png" alt="Testing GET Request">
+        <picture>
+                    <source srcset="src/blog2/test_get.webp" type="image/webp">
+                    <img src="src/blog2/test_get.png" alt="Testing GET Request" loading="lazy">
+                </picture>
       </div>
       <div class="image-container">
-        <img src="src/blog2/test_post.png" alt="Testing POST Request">
+        <picture>
+                    <source srcset="src/blog2/test_post.webp" type="image/webp">
+                    <img src="src/blog2/test_post.png" alt="Testing POST Request" loading="lazy">
+                </picture>
       </div>
     </section>
 

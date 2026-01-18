@@ -291,7 +291,10 @@
         low-cost and lightweight applications.
       </p>
       <div class="image-container">
-        <img src="src/blog1/ec2_homepage.png" alt="EC2 Instance Creation">
+        <picture>
+                    <source srcset="src/blog1/ec2_homepage.webp" type="image/webp">
+                    <img src="src/blog1/ec2_homepage.png" alt="EC2 Instance Creation" loading="lazy">
+                </picture>
       </div>
       <p>
         Once you’ve chosen the AMI and instance type, proceed to configure instance details. Add meaningful tags to
@@ -302,7 +305,10 @@
         <li>Key: <code>Environment</code>, Value: <code>Production</code></li>
       </ul>
       <div class="image-container">
-        <img src="src/blog1/ec2_tags.png" alt="Tagging EC2 Instance">
+        <picture>
+                    <source srcset="src/blog1/ec2_tags.webp" type="image/webp">
+                    <img src="src/blog1/ec2_tags.png" alt="Tagging EC2 Instance" loading="lazy">
+                </picture>
       </div>
     </section>
 
@@ -317,7 +323,10 @@
         <li>Allow HTTP (port 80) for web traffic</li>
       </ul>
       <div class="image-container">
-        <img src="src/blog1/ec2_sg.png" alt="Security Group Configuration">
+        <picture>
+                    <source srcset="src/blog1/ec2_sg.webp" type="image/webp">
+                    <img src="src/blog1/ec2_sg.png" alt="Security Group Configuration" loading="lazy">
+                </picture>
       </div>
     </section>
 
@@ -349,7 +358,10 @@ sudo systemctl enable apache2
       </code></pre>
       <p>After the instance starts, verify its status in the AWS Management Console:</p>
       <div class="image-container">
-        <img src="src/blog1/ec2.png" alt="EC2 Running State">
+        <picture>
+                    <source srcset="src/blog1/ec2.webp" type="image/webp">
+                    <img src="src/blog1/ec2.png" alt="EC2 Running State" loading="lazy">
+                </picture>
       </div>
     </section>
 
@@ -360,7 +372,10 @@ sudo systemctl enable apache2
         confirming that the server is running:
       </p>
       <div class="image-container">
-        <img src="src/blog1/ec2_nginx.png" alt="Apache Running">
+        <picture>
+                    <source srcset="src/blog1/ec2_nginx.webp" type="image/webp">
+                    <img src="src/blog1/ec2_nginx.png" alt="Apache Running" loading="lazy">
+                </picture>
       </div>
     </section>
 
@@ -371,7 +386,10 @@ sudo systemctl enable apache2
         <code>AmazonEC2RoleforSSM</code> to your instance, enabling secure remote access:
       </p>
       <div class="image-container">
-        <img src="src/blog1/ec2_ssm.png" alt="SSM Role Attachment">
+        <picture>
+                    <source srcset="src/blog1/ec2_ssm.webp" type="image/webp">
+                    <img src="src/blog1/ec2_ssm.png" alt="SSM Role Attachment" loading="lazy">
+                </picture>
       </div>
       <p>
         Use the following command to start an SSM session:
