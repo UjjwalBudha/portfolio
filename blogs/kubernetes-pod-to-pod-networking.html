@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive</title>
+    <meta content="Understand real Kubernetes pod-to-pod networking by tracing packets through network namespaces, veth pairs, routing tables, and CNI plugins like Weave and Flannel." name="description">
+    <meta content="Kubernetes networking, pod-to-pod networking, veth pair, network namespace, CNI plugin, Weave Net, Flannel, VXLAN overlay, Linux networking, container networking" name="keywords">
+    <meta name="author" content="Ujwal Budha">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://ujwalbudha.com.np/blogs/kubernetes-pod-to-pod-networking.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ujwalbudha.com.np/blogs/kubernetes-pod-to-pod-networking.html">
+    <meta property="og:title" content="Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive">
+    <meta property="og:description" content="Trace the real packet path through Kubernetes nodes using namespaces, veth pairs, routing tables, and CNI plugins like Weave and Flannel.">
+    <meta property="og:image" content="https://ujwalbudha.com.np/blogs/src/blog14/Mental-model.webp">
+    <meta property="og:site_name" content="Ujwal Budha Portfolio">
+    <meta property="article:published_time" content="2026-02-09T00:00:00+05:45">
+    <meta property="article:modified_time" content="2026-02-09T00:00:00+05:45">
+    <meta property="article:author" content="Ujwal Budha">
+    <meta property="article:section" content="DevOps">
+    <meta property="article:tag" content="Kubernetes">
+    <meta property="article:tag" content="Networking">
+    <meta property="article:tag" content="CNI">
+    <meta property="article:tag" content="Linux">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ujwalbudha.com.np/blogs/kubernetes-pod-to-pod-networking.html">
+    <meta name="twitter:title" content="Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive">
+    <meta name="twitter:description" content="Trace the real packet path through Kubernetes nodes using namespaces, veth pairs, and CNI plugins.">
+    <meta name="twitter:image" content="https://ujwalbudha.com.np/blogs/src/blog14/Mental-model.webp">
+    <meta name="twitter:creator" content="@ujjwal_budha">
+
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CQNVWBVCCD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-CQNVWBVCCD');
+    </script>
+
+    <!-- JSON-LD Structured Data: BlogPosting -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive",
+      "description": "Understand real Kubernetes pod-to-pod networking by tracing packets through network namespaces, veth pairs, routing tables, and CNI plugins like Weave and Flannel.",
+      "image": "https://ujwalbudha.com.np/blogs/src/blog14/Mental-model.webp",
+      "datePublished": "2026-02-09T00:00:00+05:45",
+      "dateModified": "2026-02-09T00:00:00+05:45",
+      "author": {
+        "@type": "Person",
+        "name": "Ujwal Budha",
+        "url": "https://ujwalbudha.com.np",
+        "jobTitle": "DevOps Engineer"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Ujwal Budha",
+        "url": "https://ujwalbudha.com.np"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ujwalbudha.com.np/blogs/kubernetes-pod-to-pod-networking.html"
+      },
+      "keywords": ["Kubernetes networking", "pod-to-pod networking", "veth pair", "network namespace", "CNI plugin", "Weave Net", "Flannel", "VXLAN overlay", "Linux networking"],
+      "articleSection": "DevOps",
+      "inLanguage": "en-US"
+    }
+    </script>
+
+    <!-- JSON-LD Structured Data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does pod-to-pod networking work in Kubernetes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each pod gets its own Linux network namespace with a virtual ethernet (veth) pair connecting it to the host. Traffic leaves the pod through eth0, crosses the veth boundary into the host namespace, and is routed by the CNI plugin either locally (same node) or across the network (different nodes)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a veth pair in Kubernetes networking?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A veth pair is a virtual ethernet cable with two ends. One end (eth0) lives inside the pod's network namespace and the other end (e.g., vethwe-XXXX) lives in the host's root namespace. Packets sent from the pod exit through eth0 and arrive at the host-side veth interface."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the role of the pause container in a Kubernetes pod?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The pause container is the first container created in every pod. Its sole purpose is to hold the network namespace alive so that all application containers can share the same network stack, IP address, and localhost. The pod retains its IP even if application containers restart."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does same-node pod traffic leave the physical NIC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. When two pods are on the same node, traffic is forwarded locally within the host network namespace using Layer-3 routing. The packet travels from one pod's veth interface to the other pod's veth interface without ever touching the physical network interface."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does cross-node pod-to-pod traffic work with Flannel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Flannel uses a VXLAN overlay. Traffic exits the source pod, enters the cni0 bridge, then passes through the flannel.1 VXLAN interface. The packet is encapsulated and sent over the physical network (ens3) to the destination node, where it is decapsulated and forwarded to the target pod."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do modern CNIs prefer L3 routing over Linux bridges?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "L3 routing offers lower latency, reduced encapsulation overhead, clearer packet visibility for debugging, and better scalability compared to bridge-based or overlay approaches. CNIs like Calico can use pure L3 routing with BGP for high-performance production clusters."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Shared Navigation Bar -->
+    <script src="../assets/js/navbar.js"></script>
+
+    <style>
+        body {
+            font-family: "Raleway", sans-serif;
+            background-color: #040404;
+            color: #fff;
+            line-height: 1.8;
+        }
+
+        /* Header Styles */
+        header {
+            position: relative;
+            text-align: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        header .banner {
+            width: 100%;
+            height: 300px;
+            background: url('assets/img/banner.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        header .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        header .blog-date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Main Content Styling */
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        main h2 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        main h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-top: 20px;
+            border-left: 4px solid #18d26e;
+            padding-left: 10px;
+        }
+
+        main p,
+        main ul {
+            font-size: 16px;
+            color: #ccc;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        main ul li {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        /* Anchor Tag Styling */
+        a {
+            color: #18d26e;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        a:hover {
+            color: #1de07e;
+            border-bottom: 1px solid #18d26e;
+        }
+
+        main pre {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: "Courier New", monospace;
+            color: #18d26e;
+            overflow-x: auto;
+            text-align: left;
+            margin: 15px 0;
+        }
+
+        /* Image Styling */
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-caption {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+
+        code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #18d26e;
+        }
+
+        /* Info Box Styling */
+        .info-box {
+            background: rgba(138, 43, 226, 0.1);
+            border-left: 4px solid #8a2be2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .info-box strong {
+            color: #8a2be2;
+        }
+
+        /* Tip Box Styling */
+        .tip-box {
+            background: rgba(24, 210, 110, 0.1);
+            border-left: 4px solid #18d26e;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip-box p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .tip-box strong {
+            color: #18d26e;
+        }
+
+        /* Author Section Styling */
+        .author-section {
+            max-width: 800px;
+            margin: 40px auto 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            border-left: 4px solid #18d26e;
+        }
+
+        .author-section h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #18d26e;
+            margin-bottom: 10px;
+        }
+
+        .author-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .author-date {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+        }
+
+        .author-bio {
+            font-size: 15px;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 24px;
+                padding: 0 15px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                hyphens: auto;
+            }
+
+            header .blog-date {
+                font-size: 14px;
+            }
+
+            main {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 20px;
+                line-height: 1.3;
+            }
+
+            header .blog-date {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Blog Header -->
+    <header>
+        <div class="banner">
+            <div class="content">
+                <h1>Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive</h1>
+                <p class="blog-date">9th February 2026</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Content -->
+    <main>
+        <section>
+            <h2>Introduction</h2>
+            <p>
+                Kubernetes networking often feels abstract until you look at what actually exists inside a node. In
+                reality, a pod is built from standard Linux networking primitives: network namespaces, virtual ethernet
+                pairs, routing tables, and iptables rules.
+            </p>
+            <p>
+                This blog focuses on understanding real pod-to-pod networking by tracing the packet path through a
+                Kubernetes node and across nodes using Linux networking primitives. It is the first part of a networking
+                deep-dive series; upcoming blogs will cover Kubernetes Services and kube-proxy internals, DNS flow with
+                CoreDNS, NetworkPolicy enforcement, external north–south traffic, and service-to-pod versus pod-to-service
+                packet behavior.
+            </p>
+        </section>
+
+        <section>
+            <h2>The Mental Model</h2>
+            <p>
+                At a high level, each pod looks like this:
+            </p>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/Mental-model.webp" type="image/webp">
+                    <img src="src/blog14/Mental-model.png" alt="Mental model of Kubernetes pod networking showing network namespace, veth pair, and host routing" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Mental model of a pod</span>
+            </div>
+
+            <p>
+                Every packet entering or leaving a pod passes through these layers.
+            </p>
+        </section>
+
+        <section>
+            <h2>What Actually Exists Inside a Pod</h2>
+            <p>
+                A Kubernetes pod is not a VM or a special network device. It is simply:
+            </p>
+            <ul>
+                <li>A Linux network namespace</li>
+                <li>A virtual interface (<code>eth0</code>)</li>
+                <li>One or more containers sharing that namespace</li>
+            </ul>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/pod-id.webp" type="image/webp">
+                    <img src="src/blog14/pod-id.png" alt="Kubernetes pod showing cluster IP and scheduled worker node" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Pod received a cluster IP and is scheduled on the worker-1 node</span>
+            </div>
+
+            <h3>The Pause Container</h3>
+            <p>
+                Kubernetes creates a small "pause" container first. Its only job is to hold the network namespace alive.
+                All application containers join this namespace.
+            </p>
+            <p>
+                <strong>Why it matters:</strong>
+            </p>
+            <ul>
+                <li>Containers share <code>localhost</code></li>
+                <li>The pod keeps the same IP even if the app containers restart</li>
+            </ul>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/pause-container.webp" type="image/webp">
+                    <img src="src/blog14/pause-container.png" alt="Pause container holding the network namespace for a Kubernetes pod" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Pause container holding the pod network namespace</span>
+            </div>
+
+            <h3>Pod Interface (eth0)</h3>
+            <p>
+                Inside the pod, running <code>ip a</code> and <code>ip route</code> reveals the network configuration:
+            </p>
+            <pre><code>ip a
+ip route</code></pre>
+            <p>You will see:</p>
+            <ul>
+                <li><code>eth0</code> with the pod IP</li>
+                <li>A default route pointing to the node-side gateway</li>
+            </ul>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/interface-on-pod.webp" type="image/webp">
+                    <img src="src/blog14/interface-on-pod.png" alt="Interfaces inside a Kubernetes pod showing lo and eth0 with veth pair" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Interfaces inside the Pod network namespace — lo for localhost and eth0 as the Pod's virtual NIC. eth0@if21 with 10.44.0.6 confirms a veth pair connected to the worker node.</span>
+            </div>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/route-on-pod.webp" type="image/webp">
+                    <img src="src/blog14/route-on-pod.png" alt="Pod routing table showing default gateway and pod network CIDR route through eth0" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Pod routing table — all traffic goes out via eth0 to the node-side gateway (default via 10.44.0.0). The 10.32.0.0/12 route means pod-network traffic is directly reachable through eth0.</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>The veth Pair — The Bridge Between Pod and Node</h2>
+            <p>
+                The most important concept in Kubernetes networking is the <strong>veth pair</strong>.
+            </p>
+            <p>
+                A veth pair acts like a virtual cable. For this demo, we are using Weave Net and Flannel, but the
+                concept remains the same across different CNIs like Calico, Cilium, and others.
+            </p>
+            <pre><code>[ pod eth0 ] &lt;====&gt; [ host vethwe-XXXX ]</code></pre>
+            <p>
+                One end lives in the pod namespace, and the other end lives in the node's root namespace. When a packet
+                leaves the pod:
+            </p>
+            <ul>
+                <li>It exits through <code>eth0</code></li>
+                <li>Crosses the veth boundary</li>
+                <li>Enters the host networking stack</li>
+            </ul>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/veth-pari-connectivity.webp" type="image/webp">
+                    <img src="src/blog14/veth-pari-connectivity.png" alt="Veth pair connectivity between Kubernetes pod and host node namespace" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Veth pair connectivity between pod and node</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Host Network Namespace — Where Routing Happens</h2>
+            <p>
+                Once traffic reaches the host namespace, normal Linux routing takes over. The CNI plugin typically
+                performs tasks such as:
+            </p>
+            <ul>
+                <li>Creating the host-side veth interface</li>
+                <li>Adding routes to pod CIDRs</li>
+                <li>Enforcing NetworkPolicy (via iptables, eBPF, or tc)</li>
+            </ul>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/pod-cidr-routes.webp" type="image/webp">
+                    <img src="src/blog14/pod-cidr-routes.png" alt="Host routing table showing pod CIDR routed via Weave CNI interface" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Pod CIDR routed via the Weave interface — the host routing table shows pod networks (10.32.0.0/12) routed through the weave interface created by the CNI.</span>
+            </div>
+
+            <p>
+                This means that all pod-to-pod traffic is handled within the node's host network namespace before leaving
+                the physical NIC, if needed.
+            </p>
+        </section>
+
+        <section>
+            <h2>Pod-to-Pod Traffic — Same Node</h2>
+            <p>
+                When two pods run on the same node, traffic remains local to that node's networking stack. The packet
+                never leaves the host or touches the physical NIC.
+            </p>
+
+            <h3>Observing Same-Node Pod Traffic with tcpdump</h3>
+            <p>
+                To verify that pod-to-pod traffic stays local on the same node, we run <code>tcpdump</code> on the
+                worker node while generating traffic between two pods.
+            </p>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/same-node-pod-pod.webp" type="image/webp">
+                    <img src="src/blog14/same-node-pod-pod.png" alt="tcpdump capture showing same-node pod-to-pod ICMP traffic on vethwepl interfaces via Weave CNI" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Same-node pod-to-pod ICMP seen on vethwepl* interfaces (Weave)</span>
+            </div>
+
+            <p>
+                The <code>vethwepl*</code> interfaces represent the host-side veth pairs created by the Weave CNI.
+                The packet enters through the source pod's veth interface and is forwarded directly to the destination
+                pod's veth interface within the host network namespace.
+            </p>
+
+            <div class="tip-box">
+                <p>
+                    <strong>Key takeaway:</strong> Same-node pod communication uses local Layer-3 forwarding and does
+                    not leave the node's physical network interface.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Pod-to-Pod Traffic — Different Nodes</h2>
+            <p>
+                When pods run on different nodes, traffic leaves the source pod via <code>eth0</code>, crosses the veth
+                into the host namespace, travels through the CNI's inter-node path to the remote node, and is then
+                routed to the destination pod's <code>eth0</code>.
+            </p>
+
+            <h3>Observing Cross-Node Pod Traffic with tcpdump</h3>
+            <p>
+                To verify pod-to-pod traffic across nodes, run <code>tcpdump</code> on both worker nodes while
+                generating traffic from a pod on one node to a pod on another.
+            </p>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/cross-node-pod.webp" type="image/webp">
+                    <img src="src/blog14/cross-node-pod.png" alt="tcpdump showing cross-node pod-to-pod communication between two Kubernetes worker nodes" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Cross-node pod communication</span>
+            </div>
+
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog14/overlay-cross-node.webp" type="image/webp">
+                    <img src="src/blog14/overlay-cross-node.png" alt="Flannel VXLAN overlay traffic on flannel.1 interface showing cross-node pod packets" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Overlay cross-node pod traffic via flannel.1</span>
+            </div>
+
+            <pre><code>flannel.1 Out IP 10.244.1.5 > 10.244.2.5
+flannel.1 In  IP 10.244.2.5 > 10.244.1.5</code></pre>
+
+            <p>
+                <code>flannel.1</code> is the VXLAN overlay interface. Flannel routes traffic through this interface
+                only when the destination pod is on another node. Same-node pod traffic stays on <code>cni0</code> and
+                never hits <code>flannel.1</code>.
+            </p>
+
+            <div class="info-box">
+                <p>
+                    <strong>Full packet path:</strong><br>
+                    <code>vethSRC → cni0 → flannel.1 → ens3 (underlay) → ens3 → flannel.1 → cni0 → vethDST</code>
+                </p>
+            </div>
+
+            <p>
+                When pods run on different nodes, Flannel uses a VXLAN overlay to carry traffic between hosts. In this
+                case, packets leave the local bridge and enter the <code>flannel.1</code> interface before being sent
+                across the physical network.
+            </p>
+            <p>
+                The presence of packets on <code>flannel.1</code> confirms that traffic is being tunneled through
+                Flannel's overlay network.
+            </p>
+        </section>
+
+        <section>
+            <h2>Why Many CNIs Prefer L3 Routing</h2>
+            <p>
+                Modern CNIs often rely on L3 routing instead of Linux bridges because:
+            </p>
+            <ul>
+                <li><strong>Lower latency</strong> — no bridge overhead or MAC table lookups</li>
+                <li><strong>Reduced encapsulation overhead</strong> — no VXLAN headers on every packet</li>
+                <li><strong>Clear packet visibility</strong> — easier to debug with standard tools</li>
+                <li><strong>Better scalability</strong> — fewer broadcast domains and simpler routing</li>
+            </ul>
+            <p>
+                Some CNIs still use overlays or bridges depending on configuration, but the core Linux packet flow
+                remains unchanged.
+            </p>
+        </section>
+
+        <section>
+            <h2>Frequently Asked Questions (FAQ)</h2>
+
+            <h3>How does pod-to-pod networking work in Kubernetes?</h3>
+            <p>
+                Each pod gets its own Linux network namespace with a virtual ethernet (veth) pair connecting it to the
+                host. Traffic leaves the pod through <code>eth0</code>, crosses the veth boundary into the host
+                namespace, and is routed by the CNI plugin either locally (same node) or across the network (different
+                nodes).
+            </p>
+
+            <h3>What is a veth pair in Kubernetes networking?</h3>
+            <p>
+                A veth pair is a virtual ethernet cable with two ends. One end (<code>eth0</code>) lives inside the
+                pod's network namespace and the other end (e.g., <code>vethwe-XXXX</code>) lives in the host's root
+                namespace. Packets sent from the pod exit through <code>eth0</code> and arrive at the host-side veth
+                interface.
+            </p>
+
+            <h3>What is the role of the pause container in a Kubernetes pod?</h3>
+            <p>
+                The pause container is the first container created in every pod. Its sole purpose is to hold the network
+                namespace alive so that all application containers can share the same network stack, IP address, and
+                <code>localhost</code>. The pod retains its IP even if application containers restart.
+            </p>
+
+            <h3>Does same-node pod traffic leave the physical NIC?</h3>
+            <p>
+                No. When two pods are on the same node, traffic is forwarded locally within the host network namespace
+                using Layer-3 routing. The packet travels from one pod's veth interface to the other pod's veth
+                interface without ever touching the physical network interface.
+            </p>
+
+            <h3>How does cross-node pod-to-pod traffic work with Flannel?</h3>
+            <p>
+                Flannel uses a VXLAN overlay. Traffic exits the source pod, enters the <code>cni0</code> bridge, then
+                passes through the <code>flannel.1</code> VXLAN interface. The packet is encapsulated and sent over the
+                physical network (<code>ens3</code>) to the destination node, where it is decapsulated and forwarded to
+                the target pod.
+            </p>
+
+            <h3>Why do modern CNIs prefer L3 routing over Linux bridges?</h3>
+            <p>
+                L3 routing offers lower latency, reduced encapsulation overhead, clearer packet visibility for
+                debugging, and better scalability compared to bridge-based or overlay approaches. CNIs like Calico can
+                use pure L3 routing with BGP for high-performance production clusters.
+            </p>
+        </section>
+
+        <section>
+            <h2>Conclusion</h2>
+            <p>
+                Kubernetes networking is ultimately built on familiar Linux networking concepts such as namespaces, veth
+                pairs, routing tables, and packet filtering. By following the real packet path — from a pod's
+                <code>eth0</code> through the host network namespace and across nodes when required — you gain a clear
+                mental model that applies to any CNI.
+            </p>
+            <p>
+                Understanding these fundamentals makes troubleshooting easier, since networking issues can be analyzed
+                by observing how packets actually move rather than relying only on Kubernetes abstractions.
+            </p>
+        </section>
+
+        <!-- Related Posts -->
+        <section class="related-posts" style="max-width: 800px; margin: 40px auto; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+            <h2 style="font-size: 28px; font-weight: 600; color: #18d26e; margin-bottom: 20px;">Related Articles</h2>
+            <div style="display: grid; gap: 20px;">
+                <a href="configuring-ec2-using-ansible.html" style="display: block; padding: 20px; background: rgba(255, 255, 255, 0.08); border-radius: 5px; border-left: 3px solid #18d26e; text-decoration: none; transition: all 0.3s ease;">
+                    <h4 style="font-size: 18px; color: #18d26e; margin-bottom: 8px;">Configuring EC2 Instances Using Ansible</h4>
+                    <p style="font-size: 14px; color: #ccc; margin: 0;">Automate Linux server configuration and infrastructure provisioning with Ansible playbooks on AWS EC2.</p>
+                </a>
+                <a href="securing-aws-infrastructure.html" style="display: block; padding: 20px; background: rgba(255, 255, 255, 0.08); border-radius: 5px; border-left: 3px solid #18d26e; text-decoration: none; transition: all 0.3s ease;">
+                    <h4 style="font-size: 18px; color: #18d26e; margin-bottom: 8px;">Securing AWS Infrastructure</h4>
+                    <p style="font-size: 14px; color: #ccc; margin: 0;">Learn essential security practices for protecting your cloud infrastructure including VPCs, security groups, and IAM policies.</p>
+                </a>
+                <a href="ec2-configuration.html" style="display: block; padding: 20px; background: rgba(255, 255, 255, 0.08); border-radius: 5px; border-left: 3px solid #18d26e; text-decoration: none; transition: all 0.3s ease;">
+                    <h4 style="font-size: 18px; color: #18d26e; margin-bottom: 8px;">EC2 Configuration Guide</h4>
+                    <p style="font-size: 14px; color: #ccc; margin: 0;">Step-by-step guide to setting up and configuring Amazon EC2 instances for production workloads.</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Author Section -->
+        <section class="author-section">
+            <h3>Written By</h3>
+            <p class="author-name">Ujwal Budha</p>
+            <p class="author-date">Published: 9th February 2026</p>
+            <p class="author-bio">
+                Hello, I am Ujwal Budha. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd.
+                Expert in creating scalable cloud infrastructure and automating the workflow for deployment. An AWS
+                Certified Solution Architect Associate, Ujwal enjoys sharing knowledge in the form of technical blogs
+                and helping others to go through their cloud journey.
+            </p>
+        </section>
+    </main>
+
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
