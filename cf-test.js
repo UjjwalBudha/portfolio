@@ -71,3 +71,41 @@ export function renderResults(trace) {
   document.getElementById('results').style.display = 'block';
   document.getElementById('loading').style.display = 'none';
 }
+
+/**
+ * renderBackendResults(data) — updates backend validation values from /api/cf-geoip
+ * @param {object} data
+ */
+export function renderBackendResults(data) {
+  const rayMatch = document.getElementById('ray-match-value');
+  const originProxy = document.getElementById('origin-proxy-value');
+  const country = document.getElementById('origin-country-value');
+  const continent = document.getElementById('origin-continent-value');
+  const region = document.getElementById('origin-region-value');
+  const city = document.getElementById('origin-city-value');
+  const ip = document.getElementById('origin-ip-value');
+
+  if (!data || !data.network || !data.geo) {
+    rayMatch.textContent = 'N/A';
+    originProxy.textContent = 'N/A';
+    country.textContent = 'N/A';
+    continent.textContent = 'N/A';
+    region.textContent = 'N/A';
+    city.textContent = 'N/A';
+    ip.textContent = 'N/A';
+    return;
+  }
+
+  const isProxied = Boolean(data.network.proxiedByCloudflare);
+  const rayId = data.network.rayId || 'N/A';
+  const traceRay = document.getElementById('ray-value').textContent;
+  const hasRayMatch = traceRay && traceRay !== 'N/A' && rayId !== 'N/A' && traceRay === rayId;
+
+  rayMatch.textContent = hasRayMatch ? 'Yes' : 'No';
+  originProxy.textContent = isProxied ? 'Yes (Cloudflare)' : 'No';
+  country.textContent = data.geo.country || 'N/A';
+  continent.textContent = data.geo.continent || 'N/A';
+  region.textContent = data.geo.region || data.geo.regionCode || 'N/A';
+  city.textContent = data.geo.city || 'N/A';
+  ip.textContent = data.network.clientIp || 'N/A';
+}

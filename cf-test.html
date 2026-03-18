@@ -102,6 +102,36 @@
       margin-bottom: 12px;
     }
 
+    .origin-section {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .origin-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: #fff;
+    }
+
+    .origin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px 16px;
+      font-size: 14px;
+    }
+
+    .origin-grid .label {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .origin-grid .value {
+      color: #fff;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
     .data-card {
       background: rgba(255, 255, 255, 0.08);
       border-radius: 8px;
@@ -192,6 +222,26 @@
           <div class="card-value" id="ray-value">—</div>
         </div>
       </div>
+
+      <div class="origin-section">
+        <h2>Origin Header Validation</h2>
+        <div class="origin-grid">
+          <div class="label">Proxied at Origin</div>
+          <div class="value" id="origin-proxy-value">—</div>
+          <div class="label">Trace Ray = Origin Ray</div>
+          <div class="value" id="ray-match-value">—</div>
+          <div class="label">Origin Client IP</div>
+          <div class="value" id="origin-ip-value">—</div>
+          <div class="label">Origin Country</div>
+          <div class="value" id="origin-country-value">—</div>
+          <div class="label">Origin Continent</div>
+          <div class="value" id="origin-continent-value">—</div>
+          <div class="label">Origin Region</div>
+          <div class="value" id="origin-region-value">—</div>
+          <div class="label">Origin City</div>
+          <div class="value" id="origin-city-value">—</div>
+        </div>
+      </div>
     </div>
 
     <!-- Error banner (hidden until fetch fails) -->
@@ -204,7 +254,7 @@
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script type="module">
-    import { parseTrace, getProxyStatus, renderResults } from './cf-test.js';
+    import { parseTrace, renderResults, renderBackendResults } from './cf-test.js';
 
     /**
      * init() — entry point, called on DOMContentLoaded
@@ -219,16 +269,20 @@
       resultsEl.style.display = 'none';
       errorEl.style.display = 'none';
 
-      fetch('/cdn-cgi/trace')
-        .then(function (response) {
-          if (!response.ok) {
-            throw new Error('Non-OK response: ' + response.status);
-          }
+      Promise.all([
+        fetch('/cdn-cgi/trace').then(function (response) {
+          if (!response.ok) throw new Error('Trace fetch failed: ' + response.status);
           return response.text();
-        })
-        .then(function (text) {
-          const trace = parseTrace(text);
+        }),
+        fetch('/api/cf-geoip').then(function (response) {
+          if (!response.ok) throw new Error('Origin fetch failed: ' + response.status);
+          return response.json();
+        }),
+      ])
+        .then(function ([traceText, backendData]) {
+          const trace = parseTrace(traceText);
           renderResults(trace);
+          renderBackendResults(backendData);
         })
         .catch(function () {
           loadingEl.style.display = 'none';

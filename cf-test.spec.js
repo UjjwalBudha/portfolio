@@ -3,7 +3,7 @@
  * Uses Vitest with jsdom environment for DOM-dependent tests.
  */
 import { describe, it, expect, beforeEach } from 'vitest';
-import { parseTrace, getProxyStatus, renderResults } from './cf-test.js';
+import { parseTrace, getProxyStatus, renderResults, renderBackendResults } from './cf-test.js';
 
 // ─── parseTrace ──────────────────────────────────────────────────────────────
 
@@ -53,6 +53,13 @@ function buildDOM() {
     <div id="loc-value"></div>
     <div id="ip-value"></div>
     <div id="ray-value"></div>
+    <div id="ray-match-value"></div>
+    <div id="origin-proxy-value"></div>
+    <div id="origin-country-value"></div>
+    <div id="origin-continent-value"></div>
+    <div id="origin-region-value"></div>
+    <div id="origin-city-value"></div>
+    <div id="origin-ip-value"></div>
   `;
 }
 
@@ -76,5 +83,29 @@ describe('renderResults', () => {
   it('displays "N/A" when loc is absent', () => {
     renderResults({ ip: '1.2.3.4', ray: 'abc' });
     expect(document.getElementById('loc-value').textContent).toBe('N/A');
+  });
+});
+
+describe('renderBackendResults', () => {
+  beforeEach(() => {
+    buildDOM();
+  });
+
+  it('renders proxied origin metadata from backend endpoint', () => {
+    document.getElementById('ray-value').textContent = 'abc123';
+    renderBackendResults({
+      network: { proxiedByCloudflare: true, rayId: 'abc123', clientIp: '1.2.3.4' },
+      geo: { country: 'NP', continent: 'AS', region: 'Bagmati', city: 'Kathmandu' },
+    });
+
+    expect(document.getElementById('origin-proxy-value').textContent).toBe('Yes (Cloudflare)');
+    expect(document.getElementById('ray-match-value').textContent).toBe('Yes');
+    expect(document.getElementById('origin-country-value').textContent).toBe('NP');
+  });
+
+  it('renders N/A values when backend payload is missing', () => {
+    renderBackendResults(null);
+    expect(document.getElementById('origin-country-value').textContent).toBe('N/A');
+    expect(document.getElementById('origin-ip-value').textContent).toBe('N/A');
   });
 });
