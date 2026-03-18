@@ -43,4 +43,23 @@ describe('buildCloudflareGeoData', () => {
     expect(result.geo.country).toBe('US');
     expect(result.network.clientIp).toBe('1.2.3.4');
   });
+
+  it('reads Cloudflare visitor location managed-transform header names', () => {
+    const result = buildCloudflareGeoData({
+      'cf-ipcountry': 'NP',
+      'cf-ipcontinent': 'AS',
+      'cf-region': 'Bagmati Province',
+      'cf-ipcity': 'Kathmandu',
+      'cf-timezone': 'Asia/Kathmandu',
+      'cf-iplatitude': '27.7172',
+      'cf-iplongitude': '85.3240',
+    });
+
+    expect(result.geo.country).toBe('NP');
+    expect(result.geo.continent).toBe('AS');
+    expect(result.geo.city).toBe('Kathmandu');
+    expect(result.geo.timezone).toBe('Asia/Kathmandu');
+    expect(result.geo.latitude).toBe('27.7172');
+    expect(result.geo.longitude).toBe('85.3240');
+  });
 });

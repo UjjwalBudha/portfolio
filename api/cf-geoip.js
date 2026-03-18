@@ -21,17 +21,22 @@ export function buildCloudflareGeoData(headers = {}, requestMeta = {}) {
   const cfConnectingIp = getFirstIp(getHeader(headers, 'cf-connecting-ip'));
   const xForwardedFor = getFirstIp(getHeader(headers, 'x-forwarded-for'));
 
+  const continent = getHeader(headers, 'cf-ipcontinent') || getHeader(headers, 'cf-continent') || null;
+  const city = getHeader(headers, 'cf-ipcity') || getHeader(headers, 'cf-city') || null;
+  const latitude = getHeader(headers, 'cf-iplatitude') || getHeader(headers, 'cf-latitude') || null;
+  const longitude = getHeader(headers, 'cf-iplongitude') || getHeader(headers, 'cf-longitude') || null;
+
   const geo = {
     country: getHeader(headers, 'cf-ipcountry') || null,
-    continent: getHeader(headers, 'cf-continent') || null,
+    continent,
     region: getHeader(headers, 'cf-region') || null,
     regionCode: getHeader(headers, 'cf-region-code') || null,
-    city: getHeader(headers, 'cf-city') || null,
+    city,
     postalCode: getHeader(headers, 'cf-postal-code') || null,
     metroCode: getHeader(headers, 'cf-metro-code') || null,
     timezone: getHeader(headers, 'cf-timezone') || null,
-    latitude: getHeader(headers, 'cf-latitude') || null,
-    longitude: getHeader(headers, 'cf-longitude') || null,
+    latitude,
+    longitude,
   };
 
   return {
