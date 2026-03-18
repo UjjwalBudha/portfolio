@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>Cloudflare Proxy Check</title>
+  <meta name="description" content="Diagnostic page to verify Cloudflare proxy status and GeoIP data.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+
+  <!-- Shared Navigation Bar -->
+  <script src="assets/js/navbar.js"></script>
+
+  <style>
+    body {
+      font-family: "Raleway", sans-serif;
+      background-color: #040404;
+      color: #fff;
+      line-height: 1.8;
+    }
+
+    .cf-page {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    .cf-page h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .cf-page .subtitle {
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 36px;
+    }
+
+    /* Loading spinner */
+    #loading {
+      text-align: center;
+      padding: 40px 0;
+    }
+
+    #loading .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(255, 255, 255, 0.15);
+      border-top-color: #18d26e;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    #loading p {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 14px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Results section */
+    #results {
+      display: none;
+    }
+
+    /* Proxy status badge */
+    #proxy-status {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 28px;
+    }
+
+    #proxy-status.proxied {
+      background: rgba(24, 210, 110, 0.15);
+      color: #18d26e;
+      border: 1px solid rgba(24, 210, 110, 0.4);
+    }
+
+    #proxy-status.not-proxied {
+      background: rgba(255, 193, 7, 0.12);
+      color: #ffc107;
+      border: 1px solid rgba(255, 193, 7, 0.35);
+    }
+
+    /* Data cards */
+    .data-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .data-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 20px 24px;
+      border-left: 3px solid #18d26e;
+    }
+
+    .data-card .card-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 6px;
+    }
+
+    .data-card .card-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      word-break: break-all;
+    }
+
+    .data-card .card-value .undetermined-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 2px;
+    }
+
+    /* Error banner */
+    #error-banner {
+      display: none;
+      background: rgba(220, 53, 69, 0.12);
+      border: 1px solid rgba(220, 53, 69, 0.4);
+      border-radius: 8px;
+      padding: 18px 22px;
+      color: #f8d7da;
+      font-size: 14px;
+    }
+
+    #error-banner .error-icon {
+      font-size: 18px;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .cf-page h1 {
+        font-size: 24px;
+      }
+
+      .data-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cf-page">
+    <h1>Cloudflare Proxy Check</h1>
+    <p class="subtitle">Fetches <code>/cdn-cgi/trace</code> to verify Cloudflare proxy status and GeoIP data.</p>
+
+    <!-- Loading state -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Fetching trace data&hellip;</p>
+    </div>
+
+    <!-- Results state (hidden until data loads) -->
+    <div id="results">
+      <!-- Proxy status badge -->
+      <div id="proxy-status"></div>
+
+      <!-- Data cards -->
+      <div class="data-cards">
+        <div class="data-card">
+          <div class="card-label">Country</div>
+          <div class="card-value" id="loc-value">—</div>
+        </div>
+        <div class="data-card">
+          <div class="card-label">IP Address</div>
+          <div class="card-value" id="ip-value">—</div>
+        </div>
+        <div class="data-card">
+          <div class="card-label">Ray ID</div>
+          <div class="card-value" id="ray-value">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error banner (hidden until fetch fails) -->
+    <div id="error-banner">
+      <span class="error-icon">&#9888;</span>
+      <span id="error-message">Unable to reach /cdn-cgi/trace — Cloudflare may not be proxying this domain.</span>
+    </div>
+  </div>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script type="module">
+    import { parseTrace, getProxyStatus, renderResults } from './cf-test.js';
+
+    /**
+     * init() — entry point, called on DOMContentLoaded
+     */
+    function init() {
+      const loadingEl = document.getElementById('loading');
+      const resultsEl = document.getElementById('results');
+      const errorEl = document.getElementById('error-banner');
+
+      // Initial state: show loading, hide others
+      loadingEl.style.display = 'block';
+      resultsEl.style.display = 'none';
+      errorEl.style.display = 'none';
+
+      fetch('/cdn-cgi/trace')
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('Non-OK response: ' + response.status);
+          }
+          return response.text();
+        })
+        .then(function (text) {
+          const trace = parseTrace(text);
+          renderResults(trace);
+        })
+        .catch(function () {
+          loadingEl.style.display = 'none';
+          resultsEl.style.display = 'none';
+          errorEl.style.display = 'block';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+
+</body>
+
+</html>
