@@ -296,14 +296,23 @@
         }
 
         main pre {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 15px;
+            background: #1a1a1a;
+            border: 1px solid rgba(24, 210, 110, 0.3);
+            border-left: 3px solid #18d26e;
+            padding: 20px;
             border-radius: 5px;
-            font-family: "Courier New", monospace;
-            color: #18d26e;
+            font-family: "Fira Code", "Courier New", monospace;
+            font-size: 14px;
+            line-height: 1.6;
             overflow-x: auto;
             text-align: left;
-            margin: 15px 0;
+            margin: 20px 0;
+        }
+
+        main pre code {
+            background: transparent;
+            color: #18d26e;
+            padding: 0;
         }
 
         /* Image Styling */
@@ -600,27 +609,13 @@
             </p>
 
             <h3>Network Architecture Diagram</h3>
-            <pre><code>
-                    +-------------------------------------+
-                    |  Headscale Coordination Server      |
-                    |     ap-northeast-3 (infra)          |
-                    |       15.152.149.240                |
-                    | Docker + Nginx (TLS) + Headscale    |
-                    +-------------------+-----------------+
-                                        |
-                        Headscale control protocol
-                                        |
-            +---------------------------+---------------------------+
-            |                                                       |
-+-----------v-----------+                               +-----------v-----------+
-|  headscale-client-01  |                               |  headscale-client-02  |
-|  VPC A · us-east-1    |                               |  VPC B · ap-south-1   |
-|  34.237.124.11        |                               |  13.207.176.206       |
-|  tag:gateway,tag:dev  |                               |  tag:gateway,tag:stg  |
-|  advertises           |                               |  advertises           |
-|  10.100.0.0/16        |                               |  172.31.0.0/16        |
-+-----------------------+                               +-----------------------+
-            </code></pre>
+            <div class="image-container">
+                <picture>
+                    <source srcset="src/blog15/network-architecture.webp" type="image/webp">
+                    <img src="src/blog15/network-architecture.png" alt="Headscale mesh VPN network architecture showing coordination server and two client nodes across AWS VPCs" loading="lazy">
+                </picture>
+                <span class="image-caption">Fig: Headscale mesh network architecture across AWS VPCs</span>
+            </div>
 
             <p>
                 Each client is deployed in a separate VPC, AWS account, and region. Headscale gives them a shared, encrypted overlay network (<code>100.64.0.0/10</code>) without VPC peering or transit gateways. Each node receives a stable mesh IP and can reach the other side's advertised subnet directly through the encrypted WireGuard tunnel.
@@ -645,21 +640,18 @@
 
             <h3>Deploying the Coordination Server</h3>
             <pre><code># Deploy Headscale coordination server
-ansible-playbook -i inventories/dev/hosts.yml playbooks/site.yml \
-  --limit role_headscale_server</code></pre>
+ansible-playbook -i inventories/dev/hosts.yml playbooks/site.yml --limit role_headscale_server</code></pre>
 
             <h3>Deploying Client Nodes</h3>
             <pre><code># Deploy Headscale client nodes
-ansible-playbook -i inventories/dev/hosts.yml playbooks/site.yml \
-  --limit role_headscale_client</code></pre>
+ansible-playbook -i inventories/dev/hosts.yml playbooks/site.yml --limit role_headscale_client</code></pre>
 
             <h3>Automated User Enrollment</h3>
             <p>
                 User enrollment and pre-authentication key generation is fully automated through Ansible:
             </p>
             <pre><code># Generate pre-auth keys for new nodes
-ansible-playbook -i inventories/dev/hosts.yml playbooks/headscale_enroll.yml \
-  -e headscale_user_generate_preauth_keys=true</code></pre>
+ansible-playbook -i inventories/dev/hosts.yml playbooks/headscale_enroll.yml -e headscale_user_generate_preauth_keys=true</code></pre>
 
             <h3>Ansible Inventory Configuration</h3>
             <p>
@@ -980,7 +972,7 @@ tailscale ping &lt;peer-mesh-ip-or-name&gt;</code></pre>
             <p class="author-name">Ujwal Budha</p>
             <p class="author-date">Published: 15th September 2026</p>
             <p class="author-bio">
-                Hello, I am Ujwal Budha. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd.
+                Hello, I am Ujwal Budha. Currently working as a DevOps Engineer.
                 Expert in creating scalable cloud infrastructure and automating the workflow for deployment. An AWS
                 Certified Solution Architect Associate, Ujwal enjoys sharing knowledge in the form of technical blogs
                 and helping others to go through their cloud journey.
