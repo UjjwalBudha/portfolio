@@ -252,6 +252,8 @@ You now have a Node.js app running on Lightsail with a static IP, process manage
 
 From here, consider adding:
 
+![](https://smallworkshop.co.uk/content/images/size/w1200/2021/12/aws.jpeg)
+
 * **Automated backups** with Lightsail snapshots
 * **A CI/CD pipeline** (GitHub Actions can SSH in and run the deploy commands)
 * **Monitoring** through Lightsail's built-in metrics and alarms
