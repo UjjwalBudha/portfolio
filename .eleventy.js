@@ -66,6 +66,33 @@ export default function (eleventyConfig) {
     return [...legacy, ...generated].sort((a, b) => b.date - a.date);
   });
 
+  // Automatically notify Google/Bing that sitemap.xml changed, on every real
+  // deploy (VERCEL env var is only set in Vercel's build environment, not
+  // local `eleventy --serve` previews). This doesn't force instant indexing
+  // - that's entirely Google's own crawl-scheduling decision - but it's the
+  // standard signal to check sooner, and it now fires automatically instead
+  // of needing manual URL Inspection after every post.
+  eleventyConfig.on("eleventy.after", async () => {
+    if (!process.env.VERCEL) return;
+
+    const sitemapUrl = "https://ujwalbudha.com.np/sitemap.xml";
+    const pingUrls = [
+      `https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`,
+      `https://www.bing.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`,
+    ];
+
+    await Promise.all(
+      pingUrls.map(async (url) => {
+        try {
+          await fetch(url);
+          console.log(`Pinged: ${url}`);
+        } catch (err) {
+          console.warn(`Sitemap ping failed for ${url}: ${err.message}`);
+        }
+      })
+    );
+  });
+
   return {
     dir: {
       input: ".",
