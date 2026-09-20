@@ -1,8 +1,8 @@
-// Fixed, not derived from the request's Host header: Vercel redirects the
-// apex domain to www at the edge before this function runs, so trusting
-// req.headers.host produces a redirect_uri that doesn't match the one
-// registered on the GitHub OAuth App (which only allows one canonical URL).
-const SITE_URL = 'https://ujwalbudha.com.np';
+// Fixed, not derived from the request's Host header. This must be
+// https://www.ujwalbudha.com.np (with www) - that's the domain the site
+// actually serves from; Chrome's address bar elides the "www." in display,
+// which is why this looked like the apex domain during earlier debugging.
+const SITE_URL = 'https://www.ujwalbudha.com.np';
 
 export default function handler(req, res) {
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;

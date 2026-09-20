@@ -2,7 +2,7 @@ backend:
   name: github
   repo: UjjwalBudha/portfolio
   branch: main
-  base_url: https://ujwalbudha.com.np
+  base_url: https://www.ujwalbudha.com.np
   auth_endpoint: api/auth
   squash_merges: true
 
