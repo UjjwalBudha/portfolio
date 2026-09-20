@@ -1,0 +1,86 @@
+backend:
+  name: github
+  repo: UjjwalBudha/portfolio
+  branch: main
+  base_url: https://ujwalbudha.com.np
+  auth_endpoint: api/auth
+  squash_merges: true
+
+publish_mode: editorial_workflow
+
+media_folder: "assets/img"
+public_folder: "/assets/img"
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    folder: "content/blogs"
+    create: true
+    slug: "{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    media_folder: "/blogs/src/{{slug}}"
+    public_folder: "/blogs/src/{{slug}}"
+    fields:
+      - { label: "Layout", name: "layout", widget: "hidden", default: "layouts/blog.njk" }
+      - { label: "Tags", name: "tags", widget: "hidden", default: ["blogPost"] }
+      - label: "Permalink"
+        name: "permalink"
+        widget: "string"
+        hint: "Must be exactly: blogs/<slug>.html — matching the slug you gave this entry"
+      - { label: "Title", name: "title", widget: "string" }
+      - label: "Meta Description"
+        name: "description"
+        widget: "text"
+        hint: "150-160 characters for SEO — see BLOG_STANDARDS.md"
+      - { label: "Keywords", name: "keywords", widget: "list" }
+      - label: "Date"
+        name: "date"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        picker_utc: true
+      - label: "Date Display"
+        name: "dateDisplay"
+        widget: "string"
+        hint: "How the date appears on the page, e.g. 21st September 2026"
+      - { label: "Article Section", name: "articleSection", widget: "string", default: "DevOps" }
+      - { label: "Article Tags", name: "articleTags", widget: "list" }
+      - label: "Hero Image"
+        name: "heroImage"
+        widget: "image"
+        hint: "Uploads into blogs/src/<slug>/ automatically"
+      - { label: "Hero Image Alt Text", name: "heroAlt", widget: "string" }
+      - label: "Homepage Card Excerpt"
+        name: "excerpt"
+        widget: "text"
+        hint: "One or two sentences shown on the homepage blog grid"
+      - label: "How-To Steps (optional, for tutorial-style posts)"
+        name: "howTo"
+        widget: "object"
+        required: false
+        collapsed: true
+        fields:
+          - { label: "Total Time (ISO 8601)", name: "totalTime", widget: "string", hint: "e.g. PT3H for 3 hours", required: false }
+          - label: "Steps"
+            name: "steps"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Step Name", name: "name", widget: "string" }
+              - { label: "Step Text", name: "text", widget: "string" }
+      - label: "FAQ (4-8 required per BLOG_STANDARDS.md)"
+        name: "faq"
+        widget: "list"
+        fields:
+          - { label: "Question", name: "q", widget: "string" }
+          - { label: "Answer", name: "a", widget: "text" }
+      - label: "Related Posts (2-4 required)"
+        name: "relatedPosts"
+        widget: "list"
+        fields:
+          - { label: "Href (slug only, no .html)", name: "href", widget: "string", hint: "e.g. headscale-mesh-vpn-aws" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Body", name: "body", widget: "markdown" }

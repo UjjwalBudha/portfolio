@@ -26,6 +26,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("cf-test.html");
   eleventyConfig.addPassthroughCopy("cf-test.js");
   eleventyConfig.addPassthroughCopy("portfolio-details.html");
+  eleventyConfig.addPassthroughCopy("admin");
 
   eleventyConfig.addCollection("blogPosts", (collectionApi) => {
     const legacy = legacyBlogs.map((post) => ({

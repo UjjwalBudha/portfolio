@@ -6,6 +6,7 @@ venv/
 .vscode/
 .claude/
 api/
+admin/
 _site/
 404.html
 cf-test.html
