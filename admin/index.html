@@ -10,6 +10,28 @@
 </head>
 
 <body>
+  <div id="debug-bar" style="font-family: sans-serif; padding: 10px; background: #fffae6; border-bottom: 2px solid #e6c200;">
+    <button id="test-popup-btn" type="button">Test popup (bypass CMS)</button>
+    <span id="debug-log" style="margin-left: 10px; color: #900; white-space: pre-wrap;"></span>
+  </div>
+  <script>
+    (function () {
+      var log = document.getElementById('debug-log');
+      function append(msg) {
+        log.textContent += (log.textContent ? '\n' : '') + msg;
+      }
+      window.addEventListener('error', function (e) {
+        append('window error: ' + e.message + ' (' + e.filename + ':' + e.lineno + ')');
+      });
+      window.addEventListener('unhandledrejection', function (e) {
+        append('unhandled rejection: ' + (e.reason && e.reason.message || e.reason));
+      });
+      document.getElementById('test-popup-btn').addEventListener('click', function () {
+        var win = window.open('/api/auth', 'test-popup', 'width=600,height=600');
+        append('window.open returned: ' + (win ? 'a window object (popup opened)' : 'null (blocked)'));
+      });
+    })();
+  </script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 
