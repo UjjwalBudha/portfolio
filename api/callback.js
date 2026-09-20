@@ -24,19 +24,21 @@ function renderPopup(status, payload) {
       showError('window.opener is missing. This page must be opened as a popup from /admin, not visited directly.');
       return;
     }
-    function receiveMessage(e) {
-      try {
-        window.opener.postMessage(
-          'authorization:github:${status}:${safeJson}',
-          e.origin
-        );
-        setTimeout(function () { window.close(); }, 500);
-      } catch (err) {
-        showError(err);
-      }
+    var authMessage = 'authorization:github:${status}:${safeJson}';
+    function send() {
+      window.opener.postMessage(authMessage, '*');
     }
-    window.addEventListener('message', receiveMessage, false);
+    // Some Decap CMS builds don't reliably reply to the initial
+    // "authorizing:github" handshake ping before this popup closes, which
+    // leaves the opener stuck waiting forever. Rather than depend on that
+    // reply, send the ping for compatibility but also send the real
+    // success/error payload unconditionally shortly after - this is the
+    // fix documented in https://github.com/decaporg/decap-cms/issues/7872
+    // for the same "stuck after a working OAuth exchange" symptom.
+    window.addEventListener('message', function () { send(); }, false);
     window.opener.postMessage('authorizing:github', '*');
+    setTimeout(send, 200);
+    setTimeout(function () { window.close(); }, 1000);
   } catch (err) {
     showError(err);
   }
