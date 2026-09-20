@@ -1,7 +1,8 @@
-function getBaseUrl(req) {
-  const proto = req.headers['x-forwarded-proto'] || 'https';
-  return `${proto}://${req.headers.host}`;
-}
+// Fixed, not derived from the request's Host header: Vercel redirects the
+// apex domain to www at the edge before this function runs, so trusting
+// req.headers.host produces a redirect_uri that doesn't match the one
+// registered on the GitHub OAuth App (which only allows one canonical URL).
+const SITE_URL = 'https://ujwalbudha.com.np';
 
 export default function handler(req, res) {
   const clientId = process.env.GITHUB_OAUTH_CLIENT_ID;
@@ -11,7 +12,7 @@ export default function handler(req, res) {
     return;
   }
 
-  const redirectUri = `${getBaseUrl(req)}/api/callback`;
+  const redirectUri = `${SITE_URL}/api/callback`;
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
