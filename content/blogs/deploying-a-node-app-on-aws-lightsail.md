@@ -29,9 +29,7 @@ excerpt: A step-by-step guide to deploying a Node.js app on AWS Lightsail — fr
   provisioning the instance to configuring Nginx, PM2, and HTTPS.
 howTo:
   totalTime: ""
-faq:
-  - q: "what is this "
-    a: this is fish
+faq: []
 ---
 
 # Deploying a Node App on AWS Lightsail
