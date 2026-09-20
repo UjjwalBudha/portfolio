@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "eleventy"
   },
   "devDependencies": {
-    "vitest": "^2.0.0",
+    "@11ty/eleventy": "^3.1.6",
     "@vitest/coverage-v8": "^2.0.0",
-    "jsdom": "^25.0.0"
+    "jsdom": "^25.0.0",
+    "vitest": "^2.0.0"
   }
 }

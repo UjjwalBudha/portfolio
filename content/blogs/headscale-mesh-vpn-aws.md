@@ -1,0 +1,416 @@
+---
+layout: layouts/blog.njk
+permalink: "blogs/headscale-mesh-vpn-aws.html"
+tags: ["blogPost"]
+title: "How to Setup Headscale VPN on AWS"
+description: "Set up a private Headscale mesh VPN across isolated AWS VPCs using Ansible — subnet routing, ACL policies, and complete infrastructure-as-code automation."
+keywords: ["Headscale", "Mesh VPN", "AWS VPC", "Tailscale", "Ansible", "Private Network", "VPN", "AWS Networking", "Infrastructure as Code", "DevOps"]
+date: 2026-09-15
+dateDisplay: "15th September 2026"
+articleSection: "DevOps"
+articleTags: ["Headscale", "VPN", "AWS"]
+heroImage: "src/blog15/thumbnail.png"
+heroAlt: "How to Setup Headscale VPN on AWS"
+excerpt: "Learn how to build a private mesh VPN network across isolated AWS VPCs using Headscale and Ansible for secure, encrypted connectivity..."
+howTo:
+  totalTime: "PT3H"
+  steps:
+    - name: "Deploy Headscale Coordination Server"
+      text: "Set up the Headscale control plane server using Docker and Nginx with TLS"
+    - name: "Configure Ansible Inventory"
+      text: "Define your mesh nodes and their roles in the Ansible inventory with appropriate tags"
+    - name: "Provision Nodes with Ansible"
+      text: "Deploy baseline, profile, and service layers using Ansible playbooks"
+    - name: "Configure ACL Policies"
+      text: "Set up access control policies and auto-approval rules for subnet routes"
+    - name: "Verify Connectivity"
+      text: "Test mesh connectivity between nodes and verify route advertisement"
+faq:
+  - q: "What is Headscale and how does it differ from Tailscale?"
+    a: "Headscale is an open-source, self-hosted implementation of the Tailscale control server. While Tailscale is a commercial SaaS offering, Headscale allows you to run your own control plane, giving you complete control over your mesh network infrastructure without relying on external services."
+  - q: "Why use Headscale instead of VPC peering or Transit Gateway?"
+    a: "Headscale provides a simpler, more cost-effective solution for connecting resources across VPCs, regions, or even cloud providers. Unlike VPC peering or Transit Gateway, Headscale works across different AWS accounts, regions, and even non-AWS environments without complex networking configuration. It also provides encrypted peer-to-peer connections and easier access control through ACL policies."
+  - q: "How does subnet routing work in Headscale?"
+    a: "Subnet routing allows a Headscale node to advertise routes to its local network. When configured as a subnet router (gateway), the node forwards traffic from the mesh network to its local VPC CIDR. With auto-approval policies, nodes tagged appropriately can automatically have their advertised routes approved, enabling seamless connectivity without manual intervention."
+  - q: "What are ACL policies in Headscale?"
+    a: "Access Control Lists (ACLs) in Headscale define who can access what resources in your mesh network. ACL policies use tags, groups, and users to control traffic flow between nodes. You can specify which nodes can communicate, which protocols are allowed, and which routes should be automatically approved. ACLs are defined in HuJSON format and can be managed as infrastructure-as-code."
+  - q: "Can Headscale connect VPCs across different AWS accounts and regions?"
+    a: "Yes, Headscale works seamlessly across AWS accounts, regions, and even different cloud providers. Each node connects to the Headscale coordination server over the internet using encrypted WireGuard tunnels, making it ideal for multi-account, multi-region, or hybrid cloud architectures without requiring VPC peering or complex networking setup."
+  - q: "How do you automate Headscale deployment with Ansible?"
+    a: "Headscale deployment with Ansible follows a layered approach: baseline (OS hardening, users, SSH), profile (Docker host setup), and service (Headscale server or client role). Ansible manages the entire lifecycle including node enrollment, pre-auth key generation, route configuration, and ACL policy deployment. All configuration is stored in inventory and host_vars, making it fully repeatable and version-controlled."
+relatedPosts:
+  - href: "configuring-ec2-using-ansible.html"
+    title: "Configuring EC2 Instances Using Ansible"
+    excerpt: "Learn how to automate EC2 configuration and management using Ansible playbooks for consistent infrastructure deployment."
+  - href: "securing-aws-infrastructure.html"
+    title: "Securing AWS Infrastructure: Best Practices"
+    excerpt: "Comprehensive guide to implementing security best practices in AWS, covering IAM, network security, encryption, and compliance."
+  - href: "kubernetes-pod-to-pod-networking.html"
+    title: "Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive"
+    excerpt: "Understand real Kubernetes networking by tracing packets through network namespaces, veth pairs, and CNI plugins."
+---
+<section>
+    <h2>Introduction</h2>
+    <p>
+        Building secure, private networks across isolated cloud environments is a common challenge in modern infrastructure. While AWS offers solutions like VPC peering and Transit Gateway, these can become complex and expensive, especially when connecting resources across multiple AWS accounts, regions, or even different cloud providers.
+    </p>
+    <p>
+        In this guide, I'll show you how to build a private mesh VPN network using Headscale - a self-hosted, open-source alternative to Tailscale's control server. We'll connect three isolated AWS VPCs across different accounts and regions, coordinated by a self-hosted Headscale control plane, and fully provisioned using Ansible for infrastructure-as-code automation.
+    </p>
+    <p>
+        This architecture demonstrates how Headscale provides a simpler, more cost-effective approach to private networking without the complexity of traditional AWS networking solutions.
+    </p>
+</section>
+<section>
+    <h2>What is Headscale?</h2>
+    <p>
+        Headscale is an open-source, self-hosted implementation of the Tailscale control server. While Tailscale is a commercial SaaS offering that manages your mesh network's control plane, Headscale allows you to run your own control plane infrastructure, giving you complete ownership and control.
+    </p>
+    <p>
+        <strong>Key benefits of Headscale:</strong>
+    </p>
+    <ul>
+        <li><strong>Self-hosted control plane:</strong> Full control over your network coordination without relying on external services</li>
+        <li><strong>Open source:</strong> Transparent, auditable code you can customize to your needs</li>
+        <li><strong>WireGuard-based:</strong> Modern, fast, and secure VPN protocol under the hood</li>
+        <li><strong>Cross-platform:</strong> Works across AWS, Azure, GCP, on-premises, and even personal devices</li>
+        <li><strong>No complex networking:</strong> No VPC peering, transit gateways, or VPN tunnels to manage</li>
+        <li><strong>Cost-effective:</strong> Eliminates data transfer charges between VPCs and transit gateway costs</li>
+    </ul>
+</section>
+<section>
+    <h2>Architecture Overview</h2>
+    <p>
+        Our demo architecture consists of three AWS EC2 instances deployed across different regions and accounts:
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Node</th>
+                <th>Role</th>
+                <th>Public IP</th>
+                <th>Region</th>
+                <th>VPC CIDR</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>headscale-coordination-server</code></td>
+                <td>Control plane</td>
+                <td>15.152.149.240</td>
+                <td>ap-northeast-3</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td><code>headscale-client-01</code></td>
+                <td>Mesh node / subnet router</td>
+                <td>34.237.124.11</td>
+                <td>us-east-1</td>
+                <td>10.100.0.0/16</td>
+            </tr>
+            <tr>
+                <td><code>headscale-client-02</code></td>
+                <td>Mesh node / subnet router</td>
+                <td>13.207.176.206</td>
+                <td>ap-south-1</td>
+                <td>172.31.0.0/16</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        Each client sits in its own VPC and advertises its local CIDR into the mesh network. The coordination server auto-approves these routes for nodes tagged with <code>tag:gateway</code>, so once a client connects, it's immediately reachable across the mesh - no manual route approval needed.
+    </p>
+    <h3>Network Architecture Diagram</h3>
+    <div class="image-container">
+        <picture>
+            <source srcset="src/blog15/network-architecture.webp" type="image/webp">
+            <img src="src/blog15/network-architecture.png" alt="Headscale mesh VPN network architecture showing coordination server and two client nodes across AWS VPCs" loading="lazy">
+        </picture>
+        <span class="image-caption">Fig: Headscale mesh network architecture across AWS VPCs</span>
+    </div>
+    <p>
+        Each client is deployed in a separate VPC, AWS account, and region. Headscale gives them a shared, encrypted overlay network (<code>100.64.0.0/10</code>) without VPC peering or transit gateways. Each node receives a stable mesh IP and can reach the other side's advertised subnet directly through the encrypted WireGuard tunnel.
+    </p>
+</section>
+<section>
+    <h2>Infrastructure Provisioning with Ansible</h2>
+    <p>
+        The entire deployment follows a layered approach using Ansible for infrastructure-as-code automation. This ensures repeatability, version control, and consistent configuration across all nodes.
+    </p>
+    <h3>Three-Tier Deployment Model</h3>
+    <p>
+        Our Ansible playbooks are organized into three distinct layers:
+    </p>
+    <ul>
+        <li><strong>Baseline Layer:</strong> OS hardening, user management, SSH configuration, firewall rules, and system patching (applied to all nodes)</li>
+        <li><strong>Profile Layer:</strong> Docker host setup and Nginx with TLS configuration (as applicable per node type)</li>
+        <li><strong>Service Layer:</strong> Headscale server role or Headscale client role deployment</li>
+    </ul>
+    <h3>Deploying the Coordination Server</h3>
+    <pre><code># Deploy Headscale coordination server
+ansible-playbook -i inventories/dev/hosts.yml playbooks/site.yml --limit role_headscale_server</code></pre>
+    <h3>Deploying Client Nodes</h3>
+    <pre><code># Deploy Headscale client nodes
+ansible-playbook -i inventories/dev/hosts.yml playbooks/site.yml --limit role_headscale_client</code></pre>
+    <h3>Automated User Enrollment</h3>
+    <p>
+        User enrollment and pre-authentication key generation is fully automated through Ansible:
+    </p>
+    <pre><code># Generate pre-auth keys for new nodes
+ansible-playbook -i inventories/dev/hosts.yml playbooks/headscale_enroll.yml -e headscale_user_generate_preauth_keys=true</code></pre>
+    <h3>Ansible Inventory Configuration</h3>
+    <p>
+        The inventory defines our mesh topology with appropriate tags and groupings:
+    </p>
+    <pre><code>headscale_users:
+  - name: dev-aws-ops-tky-dkr-headscale-client-01
+    tags: [tag:gateway, tag:dev]
+  - name: dev-aws-ops-tky-dkr-headscale-client-02
+    tags: [tag:gateway, tag:stg]
+dev:
+  hosts:
+    dev-aws-ops-tky-net-headscale-coordination-server:
+      ansible_host: 15.152.149.240
+    dev-aws-ops-tky-dkr-headscale-client-01:
+      ansible_host: 34.237.124.11
+    dev-aws-ops-tky-dkr-headscale-client-02:
+      ansible_host: 13.207.176.206
+role_headscale_server:
+  hosts:
+    dev-aws-ops-tky-net-headscale-coordination-server:
+role_headscale_client:
+  hosts:
+    dev-aws-ops-tky-dkr-headscale-client-01:
+    dev-aws-ops-tky-dkr-headscale-client-02:</code></pre>
+</section>
+<section>
+    <h2>Subnet Router Configuration</h2>
+    <p>
+        Each client node is configured as a subnet router (gateway) to advertise its VPC CIDR to the mesh network. This configuration is defined in the node's <code>host_vars</code> and pulled from Ansible Vault for sensitive data like authentication keys.
+    </p>
+    <h3>Client 01 Configuration (us-east-1)</h3>
+    <pre><code>service_headscale_client_router:
+  hostname: "dev-aws-ops-tky-dkr-headscale-client-01"
+  auth_key: "{{ vault_headscale_client_1_auth_key }}"
+  advertise_routes: ["10.100.0.0/16"]
+  advertise_tags: ["tag:gateway"]
+  accept_dns: true
+  accept_routes: true
+  snat_subnet_routes: true
+  enable_ipv4_forwarding: true
+  manage_mss_clamping: true</code></pre>
+    <h3>Client 02 Configuration (ap-south-1)</h3>
+    <pre><code>service_headscale_client_router:
+  hostname: "dev-aws-ops-tky-dkr-headscale-client-02"
+  auth_key: "{{ vault_headscale_client_2_auth_key }}"
+  advertise_routes: ["172.31.0.0/16"]
+  advertise_tags: ["tag:gateway"]
+  accept_dns: true
+  accept_routes: true
+  snat_subnet_routes: true
+  enable_ipv4_forwarding: true
+  manage_mss_clamping: true</code></pre>
+    <div class="tip-box">
+        <p>
+            <strong>Configuration Highlights:</strong><br>
+            • <code>advertise_routes</code>: Specifies which CIDR blocks to advertise to the mesh<br>
+            • <code>advertise_tags</code>: Tags used for ACL policy matching and auto-approval<br>
+            • <code>snat_subnet_routes</code>: Enables NAT for traffic forwarding<br>
+            • <code>manage_mss_clamping</code>: Handles MTU issues for proper packet forwarding
+        </p>
+    </div>
+</section>
+<section>
+    <h2>Access Control Lists (ACL)</h2>
+    <p>
+        Access control in Headscale is policy-driven through ACL definitions written in HuJSON format. These policies are rendered and deployed via Ansible as infrastructure-as-code, ensuring consistent, auditable, and version-controlled access rules.
+    </p>
+    <h3>ACL Policy Structure</h3>
+    <p>
+        Our baseline ACL policy includes:
+    </p>
+    <ul>
+        <li><strong>Admin access:</strong> <code>group:admins</code> has full access to all nodes and services (<code>*:*</code>)</li>
+        <li><strong>Environment isolation:</strong> Nodes tagged <code>tag:prod</code> and <code>tag:staging</code> can communicate with each other and defined internal CIDRs</li>
+        <li><strong>ICMP everywhere:</strong> Ping is allowed network-wide for connectivity diagnostics</li>
+        <li><strong>SSH restrictions:</strong> SSH access as <code>root</code>, <code>ubuntu</code>, or <code>admin</code> is limited to <code>group:admins</code></li>
+        <li><strong>Auto-approved routes:</strong> Routes for <code>10.100.0.0/16</code> and <code>172.31.0.0/16</code> are automatically approved for <code>tag:gateway</code> nodes</li>
+    </ul>
+    <h3>ACL Configuration Example</h3>
+    <pre><code>"tagOwners": {
+  "tag:prod": ["group:admins"],
+  "tag:staging": ["group:admins"],
+  "tag:gateway": ["group:admins"]
+},
+"acls": [
+  {
+    "action": "accept",
+    "src": ["group:admins"],
+    "dst": ["*:*"]
+  },
+  {
+    "action": "accept",
+    "src": ["tag:prod", "tag:staging"],
+    "dst": [
+      "tag:prod:*",
+      "tag:staging:*",
+      "10.0.0.0/16:*",
+      "172.31.0.0/16:*"
+    ]
+  },
+  {
+    "action": "accept",
+    "src": ["*"],
+    "dst": ["*:*"],
+    "proto": "icmp"
+  }
+],
+"autoApprovers": {
+  "routes": {
+    "10.100.0.0/16": ["tag:gateway"],
+    "172.31.0.0/16": ["tag:gateway"]
+  }
+}</code></pre>
+    <div class="info-box">
+        <p>
+            <strong>Note:</strong> This policy is a baseline for the demo and is fully configurable. In production environments, you would refine these rules based on specific team and service access requirements. ACL changes can be reloaded without disrupting existing connections.
+        </p>
+    </div>
+    <h3>Reloading ACL Configuration</h3>
+    <p>
+        After making ACL changes, reload the configuration without disrupting active connections:
+    </p>
+    <pre><code>ansible-playbook -i inventories/dev/hosts.yml playbooks/headscale_reload.yml</code></pre>
+</section>
+<section>
+    <h2>Verification and Testing</h2>
+    <p>
+        Once the infrastructure is deployed, it's important to verify that all components are functioning correctly and that the mesh network is operational.
+    </p>
+    <h3>Coordination Server Verification</h3>
+    <p>
+        On the Headscale coordination server, you can inspect users, nodes, routes, and pre-auth keys:
+    </p>
+    <pre><code># List all users
+docker exec headscale headscale users list
+# List all connected nodes
+docker exec headscale headscale nodes list
+# List advertised routes
+docker exec headscale headscale routes list
+# List pre-auth keys
+docker exec headscale headscale preauthkeys list</code></pre>
+    <div class="image-container">
+        <picture>
+            <source srcset="src/blog15/headscale-server.webp" type="image/webp">
+            <img src="src/blog15/headscale-server.png" alt="Headscale coordination server showing registered users, nodes, and pre-auth keys" loading="lazy">
+        </picture>
+        <span class="image-caption">Fig: Headscale coordination server - users, nodes, and routes</span>
+    </div>
+    <p>
+        This confirms:
+    </p>
+    <ul>
+        <li>Both clients registered as users and connected as nodes</li>
+        <li>Each node assigned a stable mesh IP (<code>100.64.0.x</code>, <code>fd7a:115c:a1e0::x</code>)</li>
+        <li>Both nodes are online</li>
+        <li>Pre-auth keys issued with appropriate tags</li>
+    </ul>
+    <h3>Client Node Verification</h3>
+    <p>
+        On each client node, verify the Tailscale status and test connectivity:
+    </p>
+    <pre><code># Check Tailscale status
+tailscale status
+# Ping peer by mesh IP or hostname
+tailscale ping &lt;peer-mesh-ip-or-name&gt;</code></pre>
+    <h3>Client 01 Status (us-east-1)</h3>
+    <div class="image-container">
+        <picture>
+            <source srcset="src/blog15/client-01.webp" type="image/webp">
+            <img src="src/blog15/client-01.png" alt="Headscale client 01 showing tailscale status and successful ping to client 02" loading="lazy">
+        </picture>
+        <span class="image-caption">Fig: Client 01 - Connected to mesh and can ping Client 02</span>
+    </div>
+    <h3>Client 02 Status (ap-south-1)</h3>
+    <div class="image-container">
+        <picture>
+            <source srcset="src/blog15/client-02.webp" type="image/webp">
+            <img src="src/blog15/client-02.png" alt="Headscale client 02 showing tailscale status and successful ping to client 01" loading="lazy">
+        </picture>
+        <span class="image-caption">Fig: Client 02 - Connected to mesh and can ping Client 01</span>
+    </div>
+    <p>
+        The verification confirms:
+    </p>
+    <ul>
+        <li>Both clients are connected to the coordination server</li>
+        <li>Each client can see the other in the mesh</li>
+        <li>Direct peer-to-peer connectivity is established</li>
+        <li>Subnet routes are advertised and accepted</li>
+        <li>ICMP (ping) works across the mesh</li>
+    </ul>
+</section>
+<section>
+    <h2>Frequently Asked Questions (FAQ)</h2>
+    <h3>What is Headscale and how does it differ from Tailscale?</h3>
+    <p>
+        Headscale is an open-source, self-hosted implementation of the Tailscale control server. While Tailscale is a commercial SaaS offering, Headscale allows you to run your own control plane, giving you complete control over your mesh network infrastructure without relying on external services.
+    </p>
+    <h3>Why use Headscale instead of VPC peering or Transit Gateway?</h3>
+    <p>
+        Headscale provides a simpler, more cost-effective solution for connecting resources across VPCs, regions, or even cloud providers. Unlike VPC peering or Transit Gateway, Headscale works across different AWS accounts, regions, and even non-AWS environments without complex networking configuration. It also provides encrypted peer-to-peer connections and easier access control through ACL policies.
+    </p>
+    <h3>How does subnet routing work in Headscale?</h3>
+    <p>
+        Subnet routing allows a Headscale node to advertise routes to its local network. When configured as a subnet router (gateway), the node forwards traffic from the mesh network to its local VPC CIDR. With auto-approval policies, nodes tagged appropriately can automatically have their advertised routes approved, enabling seamless connectivity without manual intervention.
+    </p>
+    <h3>What are ACL policies in Headscale?</h3>
+    <p>
+        Access Control Lists (ACLs) in Headscale define who can access what resources in your mesh network. ACL policies use tags, groups, and users to control traffic flow between nodes. You can specify which nodes can communicate, which protocols are allowed, and which routes should be automatically approved. ACLs are defined in HuJSON format and can be managed as infrastructure-as-code.
+    </p>
+    <h3>Can Headscale connect VPCs across different AWS accounts and regions?</h3>
+    <p>
+        Yes, Headscale works seamlessly across AWS accounts, regions, and even different cloud providers. Each node connects to the Headscale coordination server over the internet using encrypted WireGuard tunnels, making it ideal for multi-account, multi-region, or hybrid cloud architectures without requiring VPC peering or complex networking setup.
+    </p>
+    <h3>How do you automate Headscale deployment with Ansible?</h3>
+    <p>
+        Headscale deployment with Ansible follows a layered approach: baseline (OS hardening, users, SSH), profile (Docker host setup), and service (Headscale server or client role). Ansible manages the entire lifecycle including node enrollment, pre-auth key generation, route configuration, and ACL policy deployment. All configuration is stored in inventory and host_vars, making it fully repeatable and version-controlled.
+    </p>
+</section>
+<section>
+    <h2>Current Status and Next Steps</h2>
+    <p>
+        The current deployment demonstrates a working Headscale mesh VPN with the following achievements:
+    </p>
+    <ul>
+        <li>✅ Coordination server deployed and operational</li>
+        <li>✅ Both client nodes connected and communicating</li>
+        <li>✅ Route advertisement and auto-approval working across VPCs</li>
+        <li>✅ ACL baseline policy in place</li>
+        <li>✅ Full automation through Ansible infrastructure-as-code</li>
+    </ul>
+    <h3>Production Considerations</h3>
+    <p>
+        Before moving to production, consider the following enhancements:
+    </p>
+    <ul>
+        <li><strong>ACL refinement:</strong> Update ACL policies based on specific team and service access requirements</li>
+        <li><strong>DNS configuration:</strong> Set up proper DNS for the coordination server domain</li>
+        <li><strong>High availability:</strong> Consider running multiple coordination servers with shared state</li>
+        <li><strong>Monitoring:</strong> Implement monitoring for node connectivity and route health</li>
+        <li><strong>Backup:</strong> Regular backups of Headscale database and configuration</li>
+        <li><strong>Security hardening:</strong> Additional security layers like fail2ban, rate limiting, and intrusion detection</li>
+    </ul>
+</section>
+<section>
+    <h2>Conclusion</h2>
+    <p>
+        Headscale provides a powerful, cost-effective alternative to traditional AWS networking solutions for connecting isolated environments. By leveraging WireGuard's modern encryption and Tailscale's mesh networking approach, Headscale enables secure, private networks across AWS accounts, regions, and even cloud providers without the complexity of VPC peering or Transit Gateways.
+    </p>
+    <p>
+        The infrastructure-as-code approach using Ansible ensures that the entire deployment is repeatable, version-controlled, and auditable. From initial provisioning to ACL management, every aspect of the mesh network can be managed through code, making it ideal for teams practicing DevOps and GitOps methodologies.
+    </p>
+    <p>
+        Whether you're building a development environment spanning multiple accounts, creating a staging network that mirrors production, or establishing secure connectivity for a hybrid cloud architecture, Headscale offers a flexible and maintainable solution that scales with your infrastructure needs.
+    </p>
+</section>

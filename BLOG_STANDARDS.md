@@ -4,6 +4,21 @@
 
 ---
 
+## How to Write a New Post Now
+
+New posts go through an Eleventy build pipeline instead of hand-written HTML + manual `index.html`/sitemap edits:
+
+1. Create `content/blogs/<slug>.md` with front matter covering everything this doc requires (title, description, keywords, date, hero image, FAQ, related posts, HowTo steps if applicable — see `content/blogs/headscale-mesh-vpn-aws.md` as a worked example).
+2. Write the body as Markdown or raw HTML (both work) — no head meta, JSON-LD, FAQ markup, related-posts markup, or author section needed in the body; `_includes/layouts/blog.njk` generates all of that from your front matter.
+3. Drop images into `blogs/src/<slug>/` as before (still manual for now).
+4. Push. Vercel runs the Eleventy build automatically — the post appears on the homepage blog grid and in `sitemap.xml` with no other edits.
+
+**One gotcha:** if your post's body contains literal `{{ }}` (Jinja/Ansible/Helm variable syntax in a code sample, for example), leave it as-is — the pipeline is configured so Markdown files aren't run through the Nunjucks template engine, so these are never mistaken for template variables.
+
+The 12 pre-pipeline posts remain plain static HTML in `blogs/` and are untouched by this — the rest of this document (HTML structure, meta tag rules, JSON-LD schemas, etc.) still describes exactly what the pipeline generates for you, and is what you'd hand-write if ever working outside it.
+
+---
+
 ## Table of Contents
 
 1. [Technical SEO Requirements](#technical-seo-requirements)
@@ -77,6 +92,8 @@ Where `[N]` is the blog number (e.g., blog11, blog12, etc.)
 ---
 
 ## HTML Structure Template
+
+> **This section documents what gets generated for you.** As of the Eleventy pipeline (see "How to Write a New Post Now" above the Table of Contents), you write front matter + Markdown/HTML body in `content/blogs/<slug>.md`, and `_includes/layouts/blog.njk` produces this exact structure automatically — head meta, JSON-LD, header, FAQ, related posts, and author section. You only need to hand-write this full structure if you're working outside the pipeline (e.g. editing one of the 12 pre-pipeline legacy posts still living directly as static HTML in `blogs/`).
 
 Every blog post MUST follow this structure:
 
@@ -200,13 +217,15 @@ Every blog post MUST follow this structure:
             <!-- See Related Posts section below -->
         </section>
         
-        <!-- REQUIRED: Author Section -->
+        <!-- REQUIRED: Author Section (in the pipeline, this bio is a single shared partial in
+             _includes/layouts/blog.njk — only the date varies per post, so it's written here once,
+             not per post) -->
         <section class="author-section">
             <h3>Written By</h3>
             <p class="author-name">Ujwal Budha</p>
             <p class="author-date">Published: [Date]</p>
             <p class="author-bio">
-                Hello, I am Ujwal Budha. Currently working as a Jr. Cloud Engineer at Adex International Pvt. Ltd.
+                Hello, I am Ujwal Budha. Currently working as a DevOps Engineer.
                 Expert in creating scalable cloud infrastructure and automating the workflow for deployment. An AWS
                 Certified Solution Architect Associate, Ujwal enjoys sharing knowledge in the form of technical blogs
                 and helping others to go through their cloud journey.
@@ -348,7 +367,7 @@ For tutorial/guide-style content:
 - Include keywords naturally in headings
 - Use semantic variations (e.g., "Understanding Blog SEO" instead of just "SEO")
 - Make headings descriptive and scannable
-- Keep H2 tags under 10 per page if possible
+- Keep H2 tags under 10 per page if possible — this cap applies to your **authored body content** (Introduction through Conclusion). The FAQ/Related Articles/Author-section headings the layout adds automatically don't count against it.
 
 ### Content Sections (Standard Order)
 
@@ -487,15 +506,26 @@ For tutorial/guide-style content:
 
 ### Format
 
+If your post goes through the Eleventy pipeline (see "How to Write a New Post Now" below — this is the default for any post going forward), you don't hand-write this markup at all. Just list `relatedPosts` in the front matter:
+
+```yaml
+relatedPosts:
+  - href: "some-other-post.html"
+    title: "Some Other Post Title"
+    excerpt: "Brief description with keywords."
+  # 2-4 entries total
+```
+
+The layout (`_includes/layouts/blog.njk`) renders these using shared classes from `assets/css/blog.css` (`.related-posts`, `.post-link`) instead of inline `style=""` attributes — smaller HTML, one place to change the look for every post. For reference, the rendered output looks like:
+
 ```html
-<section class="related-posts" style="max-width: 800px; margin: 40px auto; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
-    <h2 style="font-size: 28px; font-weight: 600; color: #18d26e; margin-bottom: 20px;">Related Articles</h2>
+<section class="related-posts">
+    <h2>Related Articles</h2>
     <div style="display: grid; gap: 20px;">
-        <a href="[related-blog-1].html" style="display: block; padding: 20px; background: rgba(255, 255, 255, 0.08); border-radius: 5px; border-left: 3px solid #18d26e; text-decoration: none; transition: all 0.3s ease;">
-            <h4 style="font-size: 18px; color: #18d26e; margin-bottom: 8px;">[Related Blog Title]</h4>
-            <p style="font-size: 14px; color: #ccc; margin: 0;">[Brief description with keywords]</p>
+        <a href="[related-blog-1].html" class="post-link">
+            <h4>[Related Blog Title]</h4>
+            <p>[Brief description with keywords]</p>
         </a>
-        
         <!-- Repeat for 2-4 related posts -->
     </div>
 </section>

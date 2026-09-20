@@ -1,0 +1,110 @@
+[
+  {
+    "href": "blogs/kubernetes-pod-to-pod-networking.html",
+    "thumbnail": "blogs/src/blog14/thumbnail.png",
+    "alt": "Blog 14",
+    "title": "Understanding Kubernetes Pod-to-Pod Networking: A Deep Dive",
+    "date": "2026-02-09",
+    "dateDisplay": "9th February 2026",
+    "excerpt": "Deep dive into Kubernetes networking using Linux primitives — namespaces, veth pairs, and CNI plugins..."
+  },
+  {
+    "href": "blogs/implementing-seo-best-practices.html",
+    "thumbnail": "blogs/src/blog11/thumbnail.png",
+    "alt": "Blog 11",
+    "title": "Blog SEO Guide: Rank on Google's First Page in 2026",
+    "date": "2026-01-22",
+    "dateDisplay": "22nd January 2026",
+    "excerpt": "A comprehensive guide to improving search visibility through technical SEO, structured metadata, and automation..."
+  },
+  {
+    "href": "blogs/removing-sensitive-data-git-history.html",
+    "thumbnail": "blogs/src/blog10/git.png",
+    "alt": "Blog 10",
+    "title": "Remove Sensitive Data from Git History",
+    "date": "2026-01-12",
+    "dateDisplay": "12th January 2026",
+    "excerpt": "Learn how to permanently remove passwords, API keys, and sensitive data from Git repository history using git filter-repo..."
+  },
+  {
+    "href": "blogs/amazon-cloudfront-optimization.html",
+    "thumbnail": "blogs/src/blog6/cloudfront.png",
+    "alt": "Blog 6",
+    "title": "Amazon Cloudfront Optimization",
+    "date": "2025-12-16",
+    "dateDisplay": "16th December 2025",
+    "excerpt": "Optimize web performance with Amazon CloudFront for faster content delivery..."
+  },
+  {
+    "href": "blogs/building-knowledge-base-rag.html",
+    "thumbnail": "blogs/src/blog8/build-kb.png",
+    "alt": "Blog 8",
+    "title": "Building an Effective Knowledge Base for RAG",
+    "date": "2025-12-01",
+    "dateDisplay": "1st December 2025",
+    "excerpt": "A practical guide to constructing robust knowledge bases for Retrieval-Augmented Generation systems..."
+  },
+  {
+    "href": "blogs/securing-aws-infrastructure.html",
+    "thumbnail": "blogs/src/blog5/security.png",
+    "alt": "Blog 5",
+    "title": "Securing AWS Infrastructure",
+    "date": "2025-11-20",
+    "dateDisplay": "20th November 2025",
+    "excerpt": "A step-by-step guide to securing your AWS infrastructure with best practices..."
+  },
+  {
+    "href": "blogs/fine-tuning-amazon-bedrock.html",
+    "thumbnail": "blogs/src/blog7/bedrock_finetuning.png",
+    "alt": "Blog 7",
+    "title": "Fine-Tuning on Amazon Bedrock",
+    "date": "2025-11-05",
+    "dateDisplay": "05th November 2025",
+    "excerpt": "A comprehensive guide to optimizing foundation models like Nova and Titan on Bedrock..."
+  },
+  {
+    "href": "blogs/configuring-ec2-using-ansible.html",
+    "thumbnail": "blogs/src/blog4/ansible_ec2.png",
+    "alt": "Blog 4",
+    "title": "Configuring EC2 Instance Using Ansible",
+    "date": "2025-10-23",
+    "dateDisplay": "23rd October 2025",
+    "excerpt": "A comprehensive guide to configuring an EC2 instance using Ansible..."
+  },
+  {
+    "href": "blogs/aws-account-security-tools.html",
+    "thumbnail": "blogs/src/blog3/aws-security.png",
+    "alt": "Blog 3",
+    "title": "AWS Security: IAM, Secrets, Cognito",
+    "date": "2025-09-13",
+    "dateDisplay": "13th September 2025",
+    "excerpt": "Learn how to secure your AWS account using powerful tools..."
+  },
+  {
+    "href": "blogs/api-gateway-dynamodb-integration.html",
+    "thumbnail": "blogs/src/blog2/apigatewat_dynamo.png",
+    "alt": "Blog 2",
+    "title": "API Gateway Integration",
+    "date": "2025-08-23",
+    "dateDisplay": "23rd August 2025",
+    "excerpt": "Step-by-step guide to creating an API Gateway with GET and POST methods..."
+  },
+  {
+    "href": "blogs/ec2-configuration.html",
+    "thumbnail": "blogs/src/blog1/ec2_logo.png",
+    "alt": "Blog 1",
+    "title": "EC2 Instance Setup AWS",
+    "date": "2025-07-10",
+    "dateDisplay": "10th July 2025",
+    "excerpt": "A detailed guide to setting up an EC2 instance on AWS with user data and configuration..."
+  },
+  {
+    "href": "blogs/deploying-deepseek-r1-locally.html",
+    "thumbnail": "blogs/src/blog9/ollama.png",
+    "alt": "Blog 9",
+    "title": "How to Deploy DeepSeek-r1 Locally with Ollama",
+    "date": "2025-01-02",
+    "dateDisplay": "2nd january 2025",
+    "excerpt": "Learn how to deploy DeepSeek-r1 LLM models locally on CPU/GPU using Ollama and Open WebUI..."
+  }
+]
