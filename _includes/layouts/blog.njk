@@ -9,11 +9,11 @@
     <meta content="{{ keywords | join(', ') }}" name="keywords">
     <meta name="author" content="{{ site.author }}">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+    <link rel="canonical" href="{{ site.url }}{{ page.url | cleanUrl }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="{{ site.url }}{{ page.url }}">
+    <meta property="og:url" content="{{ site.url }}{{ page.url | cleanUrl }}">
     <meta property="og:title" content="{{ title }}">
     <meta property="og:description" content="{{ description }}">
     <meta property="og:image" content="{{ site.url }}/blogs/{{ heroImage }}">
@@ -28,7 +28,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="{{ site.url }}{{ page.url }}">
+    <meta name="twitter:url" content="{{ site.url }}{{ page.url | cleanUrl }}">
     <meta name="twitter:title" content="{{ title }}">
     <meta name="twitter:description" content="{{ description }}">
     <meta name="twitter:image" content="{{ site.url }}/blogs/{{ heroImage }}">
@@ -69,7 +69,7 @@
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "{{ site.url }}{{ page.url }}"
+        "@id": "{{ site.url }}{{ page.url | cleanUrl }}"
       },
       "keywords": [{% for k in keywords %}"{{ k }}"{% if not loop.last %}, {% endif %}{% endfor %}],
       "articleSection": "{{ articleSection }}",

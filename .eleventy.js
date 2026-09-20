@@ -12,6 +12,11 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addFilter("shortDate", (date) => new Date(date).toISOString().slice(0, 10));
 
+  // Vercel serves cleanUrls (vercel.json), so URLs we generate ourselves
+  // (hrefs, canonical/OG tags, sitemap) should point straight at the
+  // extension-less form rather than relying on the .html -> clean redirect.
+  eleventyConfig.addFilter("cleanUrl", (url) => url.replace(/\.html$/, ""));
+
   eleventyConfig.addPassthroughCopy("assets");
   eleventyConfig.addPassthroughCopy("blogs/src");
   eleventyConfig.addPassthroughCopy("blogs/*.html");
@@ -29,7 +34,7 @@ export default function (eleventyConfig) {
     }));
 
     const generated = collectionApi.getFilteredByTag("blogPost").map((item) => ({
-      href: item.url.replace(/^\//, ""),
+      href: item.url.replace(/^\//, "").replace(/\.html$/, ""),
       thumbnail: `blogs/${item.data.heroImage}`,
       alt: item.data.heroAlt || item.data.title,
       title: item.data.title,

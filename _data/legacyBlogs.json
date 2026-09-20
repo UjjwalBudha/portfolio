@@ -1,6 +1,6 @@
 [
   {
-    "href": "blogs/kubernetes-pod-to-pod-networking.html",
+    "href": "blogs/kubernetes-pod-to-pod-networking",
     "thumbnail": "blogs/src/blog14/thumbnail.png",
     "alt": "Blog 14",
     "title": "Understanding Kubernetes Pod-to-Pod Networking: A Deep Dive",
@@ -9,7 +9,7 @@
     "excerpt": "Deep dive into Kubernetes networking using Linux primitives — namespaces, veth pairs, and CNI plugins..."
   },
   {
-    "href": "blogs/implementing-seo-best-practices.html",
+    "href": "blogs/implementing-seo-best-practices",
     "thumbnail": "blogs/src/blog11/thumbnail.png",
     "alt": "Blog 11",
     "title": "Blog SEO Guide: Rank on Google's First Page in 2026",
@@ -18,7 +18,7 @@
     "excerpt": "A comprehensive guide to improving search visibility through technical SEO, structured metadata, and automation..."
   },
   {
-    "href": "blogs/removing-sensitive-data-git-history.html",
+    "href": "blogs/removing-sensitive-data-git-history",
     "thumbnail": "blogs/src/blog10/git.png",
     "alt": "Blog 10",
     "title": "Remove Sensitive Data from Git History",
@@ -27,7 +27,7 @@
     "excerpt": "Learn how to permanently remove passwords, API keys, and sensitive data from Git repository history using git filter-repo..."
   },
   {
-    "href": "blogs/amazon-cloudfront-optimization.html",
+    "href": "blogs/amazon-cloudfront-optimization",
     "thumbnail": "blogs/src/blog6/cloudfront.png",
     "alt": "Blog 6",
     "title": "Amazon Cloudfront Optimization",
@@ -36,7 +36,7 @@
     "excerpt": "Optimize web performance with Amazon CloudFront for faster content delivery..."
   },
   {
-    "href": "blogs/building-knowledge-base-rag.html",
+    "href": "blogs/building-knowledge-base-rag",
     "thumbnail": "blogs/src/blog8/build-kb.png",
     "alt": "Blog 8",
     "title": "Building an Effective Knowledge Base for RAG",
@@ -45,7 +45,7 @@
     "excerpt": "A practical guide to constructing robust knowledge bases for Retrieval-Augmented Generation systems..."
   },
   {
-    "href": "blogs/securing-aws-infrastructure.html",
+    "href": "blogs/securing-aws-infrastructure",
     "thumbnail": "blogs/src/blog5/security.png",
     "alt": "Blog 5",
     "title": "Securing AWS Infrastructure",
@@ -54,7 +54,7 @@
     "excerpt": "A step-by-step guide to securing your AWS infrastructure with best practices..."
   },
   {
-    "href": "blogs/fine-tuning-amazon-bedrock.html",
+    "href": "blogs/fine-tuning-amazon-bedrock",
     "thumbnail": "blogs/src/blog7/bedrock_finetuning.png",
     "alt": "Blog 7",
     "title": "Fine-Tuning on Amazon Bedrock",
@@ -63,7 +63,7 @@
     "excerpt": "A comprehensive guide to optimizing foundation models like Nova and Titan on Bedrock..."
   },
   {
-    "href": "blogs/configuring-ec2-using-ansible.html",
+    "href": "blogs/configuring-ec2-using-ansible",
     "thumbnail": "blogs/src/blog4/ansible_ec2.png",
     "alt": "Blog 4",
     "title": "Configuring EC2 Instance Using Ansible",
@@ -72,7 +72,7 @@
     "excerpt": "A comprehensive guide to configuring an EC2 instance using Ansible..."
   },
   {
-    "href": "blogs/aws-account-security-tools.html",
+    "href": "blogs/aws-account-security-tools",
     "thumbnail": "blogs/src/blog3/aws-security.png",
     "alt": "Blog 3",
     "title": "AWS Security: IAM, Secrets, Cognito",
@@ -81,7 +81,7 @@
     "excerpt": "Learn how to secure your AWS account using powerful tools..."
   },
   {
-    "href": "blogs/api-gateway-dynamodb-integration.html",
+    "href": "blogs/api-gateway-dynamodb-integration",
     "thumbnail": "blogs/src/blog2/apigatewat_dynamo.png",
     "alt": "Blog 2",
     "title": "API Gateway Integration",
@@ -90,7 +90,7 @@
     "excerpt": "Step-by-step guide to creating an API Gateway with GET and POST methods..."
   },
   {
-    "href": "blogs/ec2-configuration.html",
+    "href": "blogs/ec2-configuration",
     "thumbnail": "blogs/src/blog1/ec2_logo.png",
     "alt": "Blog 1",
     "title": "EC2 Instance Setup AWS",
@@ -99,7 +99,7 @@
     "excerpt": "A detailed guide to setting up an EC2 instance on AWS with user data and configuration..."
   },
   {
-    "href": "blogs/deploying-deepseek-r1-locally.html",
+    "href": "blogs/deploying-deepseek-r1-locally",
     "thumbnail": "blogs/src/blog9/ollama.png",
     "alt": "Blog 9",
     "title": "How to Deploy DeepSeek-r1 Locally with Ollama",

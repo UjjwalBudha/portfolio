@@ -39,13 +39,13 @@ faq:
   - q: "How do you automate Headscale deployment with Ansible?"
     a: "Headscale deployment with Ansible follows a layered approach: baseline (OS hardening, users, SSH), profile (Docker host setup), and service (Headscale server or client role). Ansible manages the entire lifecycle including node enrollment, pre-auth key generation, route configuration, and ACL policy deployment. All configuration is stored in inventory and host_vars, making it fully repeatable and version-controlled."
 relatedPosts:
-  - href: "configuring-ec2-using-ansible.html"
+  - href: "configuring-ec2-using-ansible"
     title: "Configuring EC2 Instances Using Ansible"
     excerpt: "Learn how to automate EC2 configuration and management using Ansible playbooks for consistent infrastructure deployment."
-  - href: "securing-aws-infrastructure.html"
+  - href: "securing-aws-infrastructure"
     title: "Securing AWS Infrastructure: Best Practices"
     excerpt: "Comprehensive guide to implementing security best practices in AWS, covering IAM, network security, encryption, and compliance."
-  - href: "kubernetes-pod-to-pod-networking.html"
+  - href: "kubernetes-pod-to-pod-networking"
     title: "Kubernetes Pod-to-Pod Networking: Linux Primitives Deep Dive"
     excerpt: "Understand real Kubernetes networking by tracing packets through network namespaces, veth pairs, and CNI plugins."
 ---

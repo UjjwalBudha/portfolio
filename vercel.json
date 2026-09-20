@@ -1,4 +1,5 @@
 {
   "buildCommand": "npx @11ty/eleventy",
-  "outputDirectory": "_site"
+  "outputDirectory": "_site",
+  "cleanUrls": true
 }
