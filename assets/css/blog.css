@@ -137,6 +137,21 @@ main pre code {
 }
 
 /* Image Styling */
+
+/* Baseline for any image dropped straight into the body (e.g. a plain
+   ![](...) from the CMS's Markdown editor, with no wrapping markup) - the
+   .image-container rules below add captions/centering on top of this for
+   images that use that convention, but every image gets sized sanely. */
+main img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: block;
+    margin: 20px auto;
+}
+
 .image-container {
     text-align: center;
     margin: 30px 0;
