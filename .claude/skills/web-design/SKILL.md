@@ -12,7 +12,7 @@ Concrete, checkable rules for visual work on this site — not aesthetic opinion
 - Static HTML pages (`index.html`, `portfolio-details.html`, `404.html`) — no framework, no build/bundle step.
 - Styling: Bootstrap 5 (`assets/vendor/bootstrap`) + one custom stylesheet `assets/css/style.css`. No CSS custom properties (`:root` vars) currently exist — colors and fonts are hardcoded per rule. If you introduce a new recurring color or spacing value, add it as a `:root` variable in `style.css` rather than hardcoding it a third time.
 - Fonts already loaded: **Open Sans** (body), **Raleway** (nav/section titles), **Poppins** (headings/buttons). Don't introduce a fourth font family — reuse these three.
-- JS: jQuery + vendor plugins (isotope, owl.carousel, venobox, waypoints, counterup) plus `assets/js/main.js` and `assets/js/navbar.js`. New interactive behavior should extend `main.js`/`navbar.js` in the same jQuery style, not introduce a new framework.
+- JS: jQuery + vendor plugins (waypoints, counterup) plus `assets/js/main.js` and `assets/js/navbar.js`. New interactive behavior should extend `main.js`/`navbar.js` in the same jQuery style, not introduce a new framework.
 - Blog content has its own detailed conventions in `BLOG_STANDARDS.md` — read that file before touching anything under `blogs/`. This skill covers layout/visual work, not blog content structure.
 
 ## Before any visual change

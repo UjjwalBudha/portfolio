@@ -40,7 +40,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("assets");
   eleventyConfig.addPassthroughCopy("blogs/src");
   eleventyConfig.addPassthroughCopy("blogs/*.html");
-  eleventyConfig.addPassthroughCopy("forms");
   eleventyConfig.addPassthroughCopy("robots.txt");
   eleventyConfig.addPassthroughCopy("404.html");
   eleventyConfig.addPassthroughCopy("cf-test.html");
