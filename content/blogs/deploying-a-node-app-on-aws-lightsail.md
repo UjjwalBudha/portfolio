@@ -31,7 +31,6 @@ howTo:
   totalTime: ""
 faq: []
 ---
-
 # Deploying a Node App on AWS Lightsail
 
 AWS can feel overwhelming when all you want to do is put a Node.js app on the internet. EC2, VPCs, security groups, load balancers: it's a lot. **AWS Lightsail** strips that away. You get a simple virtual server with a fixed monthly price, a static IP, and a firewall you can configure in a few clicks.
@@ -40,10 +39,10 @@ In this guide, you'll deploy a Node.js app to Lightsail, keep it running with **
 
 ## What You'll Need
 
-- An AWS account
-- A Node.js app in a Git repository (Express, Fastify, or anything that listens on a port)
-- A domain name (optional, but required for HTTPS)
-- Basic comfort with the terminal
+* An AWS account
+* A Node.js app in a Git repository (Express, Fastify, or anything that listens on a port)
+* A domain name (optional, but required for HTTPS)
+* Basic comfort with the terminal
 
 ## Step 1: Create a Lightsail Instance
 
@@ -52,6 +51,8 @@ In this guide, you'll deploy a Node.js app to Lightsail, keep it running with **
 3. Under **Pick your instance image**, select **Linux/Unix** and then **OS Only → Ubuntu 22.04 LTS**.
 4. Pick a plan. The smallest plan works for small apps and side projects; you can upgrade later.
 5. Give the instance a name, such as `node-app-server`, and click **Create instance**.
+
+![](https://smallworkshop.co.uk/content/images/size/w1200/2021/12/aws.jpeg)
 
 Wait a minute or two until the status shows **Running**.
 
@@ -68,7 +69,7 @@ By default, a Lightsail instance's public IP changes if you stop and start it. A
 In the instance's **Networking** tab, under **IPv4 Firewall**, make sure these rules exist:
 
 | Application | Protocol | Port |
-|-------------|----------|------|
+| ----------- | -------- | ---- |
 | SSH         | TCP      | 22   |
 | HTTP        | TCP      | 80   |
 | HTTPS       | TCP      | 443  |
@@ -202,8 +203,8 @@ Visit `http://YOUR_STATIC_IP` in your browser. You should see your app.
 
 In your DNS provider (or Lightsail's own DNS zone under **Networking → Create DNS zone**), add:
 
-| Type | Name | Value |
-|------|------|-------|
+| Type | Name | Value          |
+| ---- | ---- | -------------- |
 | A    | @    | YOUR_STATIC_IP |
 | A    | www  | YOUR_STATIC_IP |
 
@@ -251,9 +252,9 @@ You now have a Node.js app running on Lightsail with a static IP, process manage
 
 From here, consider adding:
 
-- **Automated backups** with Lightsail snapshots
-- **A CI/CD pipeline** (GitHub Actions can SSH in and run the deploy commands)
-- **Monitoring** through Lightsail's built-in metrics and alarms
-- **A managed database** if your app needs persistent storage
+* **Automated backups** with Lightsail snapshots
+* **A CI/CD pipeline** (GitHub Actions can SSH in and run the deploy commands)
+* **Monitoring** through Lightsail's built-in metrics and alarms
+* **A managed database** if your app needs persistent storage
 
 Happy deploying!
