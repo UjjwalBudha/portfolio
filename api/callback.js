@@ -2,20 +2,44 @@ function renderPopup(status, payload) {
   // Escape "<" so a maliciously-shaped value can't prematurely close the
   // <script> tag this gets embedded in.
   const safeJson = JSON.stringify(payload).replace(/</g, '\\u003c');
+  const message =
+    status === 'success'
+      ? 'Login successful. This window should close automatically — if not, you can close it yourself.'
+      : 'Login failed. See details below.';
 
   return `<!DOCTYPE html>
 <html>
-<body>
+<head><meta charset="utf-8"></head>
+<body style="font-family: sans-serif; padding: 2rem; color: #222;">
+<p id="status">${message}</p>
+<pre id="error" style="color: #c00; white-space: pre-wrap;"></pre>
 <script>
 (function () {
-  function receiveMessage(e) {
-    window.opener.postMessage(
-      'authorization:github:${status}:${safeJson}',
-      e.origin
-    );
+  function showError(err) {
+    document.getElementById('status').textContent = 'Something went wrong finishing login — see details below.';
+    document.getElementById('error').textContent = String((err && err.stack) || err);
   }
-  window.addEventListener('message', receiveMessage, false);
-  window.opener.postMessage('authorizing:github', '*');
+  try {
+    if (!window.opener) {
+      showError('window.opener is missing. This page must be opened as a popup from /admin, not visited directly.');
+      return;
+    }
+    function receiveMessage(e) {
+      try {
+        window.opener.postMessage(
+          'authorization:github:${status}:${safeJson}',
+          e.origin
+        );
+        setTimeout(function () { window.close(); }, 500);
+      } catch (err) {
+        showError(err);
+      }
+    }
+    window.addEventListener('message', receiveMessage, false);
+    window.opener.postMessage('authorizing:github', '*');
+  } catch (err) {
+    showError(err);
+  }
 })();
 </script>
 </body>
