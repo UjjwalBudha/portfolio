@@ -601,7 +601,7 @@ Only after conversion, reference images using the `<picture>` element:
 ### Thumbnail Requirements
 
 Every blog MUST have:
-- **File**: `src/blog[N]/thumbnail.png` AND `thumbnail.webp`
+- **File**: `src/blog[N]/[descriptive-keyword-name].png` AND matching `.webp` (avoid the literal name "thumbnail" - it carries no keyword value for image search and Google Images results)
 - **Size**: 1200x630px (Open Graph recommended)
 - **Content**: Visually represent the blog topic
 - **Text**: Blog title or key visual

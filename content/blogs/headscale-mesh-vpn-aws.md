@@ -3,14 +3,14 @@ layout: layouts/blog.njk
 permalink: "blogs/headscale-mesh-vpn-aws.html"
 tags: ["blogPost"]
 title: "How to Setup Headscale VPN on AWS"
-description: "Set up a private Headscale mesh VPN across isolated AWS VPCs using Ansible — subnet routing, ACL policies, and complete infrastructure-as-code automation."
-keywords: ["Headscale", "Mesh VPN", "AWS VPC", "Tailscale", "Ansible", "Private Network", "VPN", "AWS Networking", "Infrastructure as Code", "DevOps"]
+description: "Deploy Headscale, a self-hosted Tailscale alternative, as a mesh VPN across multiple AWS VPCs and accounts — Ansible automation, subnet routing, and ACL policies, no VPC peering or Transit Gateway required."
+keywords: ["Headscale", "Tailscale Alternative", "Self-Hosted VPN", "Mesh VPN AWS", "AWS Multi-VPC Networking", "VPC Peering Alternative", "AWS Transit Gateway Alternative", "WireGuard", "Ansible Automation", "Infrastructure as Code"]
 date: 2026-09-15
 dateDisplay: "15th September 2026"
 articleSection: "DevOps"
-articleTags: ["Headscale", "VPN", "AWS"]
-heroImage: "src/blog15/thumbnail.png"
-heroAlt: "How to Setup Headscale VPN on AWS"
+articleTags: ["Headscale", "Tailscale Alternative", "VPN", "AWS", "WireGuard"]
+heroImage: "src/blog15/headscale-vpn-aws-mesh-network.png"
+heroAlt: "Headscale mesh VPN on AWS - self-hosted Tailscale alternative for multi-VPC networking"
 excerpt: "Learn how to build a private mesh VPN network across isolated AWS VPCs using Headscale and Ansible for secure, encrypted connectivity..."
 howTo:
   totalTime: "PT3H"
@@ -52,10 +52,13 @@ relatedPosts:
 <section>
     <h2>Introduction</h2>
     <p>
+        <strong>Headscale is a self-hosted, open-source Tailscale alternative</strong> that lets you run your own mesh VPN control plane instead of relying on Tailscale's hosted service. In this guide, I'll show you how to use it as a practical <strong>AWS Transit Gateway alternative</strong> and <strong>VPC peering alternative</strong> - building a private mesh network across isolated AWS VPCs without the cost and complexity of traditional AWS networking.
+    </p>
+    <p>
         Building secure, private networks across isolated cloud environments is a common challenge in modern infrastructure. While AWS offers solutions like VPC peering and Transit Gateway, these can become complex and expensive, especially when connecting resources across multiple AWS accounts, regions, or even different cloud providers.
     </p>
     <p>
-        In this guide, I'll show you how to build a private mesh VPN network using Headscale - a self-hosted, open-source alternative to Tailscale's control server. We'll connect three isolated AWS VPCs across different accounts and regions, coordinated by a self-hosted Headscale control plane, and fully provisioned using Ansible for infrastructure-as-code automation.
+        We'll connect three isolated AWS VPCs across different accounts and regions, coordinated by a self-hosted Headscale control plane, and fully provisioned using Ansible for infrastructure-as-code automation.
     </p>
     <p>
         This architecture demonstrates how Headscale provides a simpler, more cost-effective approach to private networking without the complexity of traditional AWS networking solutions.
@@ -77,6 +80,51 @@ relatedPosts:
         <li><strong>No complex networking:</strong> No VPC peering, transit gateways, or VPN tunnels to manage</li>
         <li><strong>Cost-effective:</strong> Eliminates data transfer charges between VPCs and transit gateway costs</li>
     </ul>
+</section>
+<section>
+    <h2>Headscale vs Tailscale vs AWS Transit Gateway</h2>
+    <p>
+        Before diving into the setup, here's how a self-hosted Headscale mesh VPN compares to the alternatives most teams evaluate first:
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Approach</th>
+                <th>Hosting</th>
+                <th>Cross-account / cross-region</th>
+                <th>Pricing model</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Headscale</strong></td>
+                <td>Self-hosted (you run the control plane)</td>
+                <td>Yes, natively - even across cloud providers</td>
+                <td>Cost of one small server, no per-device fee</td>
+            </tr>
+            <tr>
+                <td>Tailscale</td>
+                <td>Managed SaaS control plane</td>
+                <td>Yes</td>
+                <td>Per-device / per-seat billing</td>
+            </tr>
+            <tr>
+                <td>AWS VPC Peering</td>
+                <td>AWS-managed, per-VPC pairing</td>
+                <td>Limited - no transitive routing, region/account constraints</td>
+                <td>Data transfer charges between VPCs</td>
+            </tr>
+            <tr>
+                <td>AWS Transit Gateway</td>
+                <td>AWS-managed hub-and-spoke</td>
+                <td>Yes, within AWS</td>
+                <td>Hourly attachment cost + data processing fees</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        The takeaway: if you need connectivity that spans AWS accounts, regions, or even non-AWS environments without paying per-device or per-attachment fees, Headscale as a self-hosted Tailscale alternative is the simplest and most cost-effective option of the four.
+    </p>
 </section>
 <section>
     <h2>Architecture Overview</h2>
