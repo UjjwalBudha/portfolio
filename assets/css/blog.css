@@ -16,8 +16,9 @@ header {
 header .banner {
     width: 100%;
     height: 300px;
-    background: url('../img/banner.jpg') no-repeat center center;
-    background-size: cover;
+    /* No banner image asset exists - a missing background-image is a
+       harmless 404, but it's still an avoidable console error. */
+    background-color: #040404;
 }
 
 header .content {
@@ -268,7 +269,7 @@ code {
     transform: translateX(5px);
 }
 
-.related-posts .post-link h4 {
+.related-posts .post-link h3 {
     font-size: 18px;
     color: #18d26e;
     margin-bottom: 8px;
