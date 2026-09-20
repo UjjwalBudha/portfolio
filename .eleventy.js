@@ -4,6 +4,19 @@ const legacyBlogs = JSON.parse(
   readFileSync(new URL("./_data/legacyBlogs.json", import.meta.url))
 );
 
+const isAbsoluteUrl = (value) => /^https?:\/\//i.test(value);
+
+// Normalizes heroImage into something usable directly as an <img src> from
+// the homepage. heroImage can be: a full external URL (CMS's "Insert from
+// URL" option - used as-is), the CMS upload path ("/blogs/src/<slug>/file",
+// per admin/config.yml's public_folder), or the convention used when
+// hand-writing front matter ("src/<slug>/file", relative to blogs/).
+function normalizeHeroImage(heroImage) {
+  if (isAbsoluteUrl(heroImage)) return heroImage;
+  const stripped = heroImage.replace(/^\//, "");
+  return stripped.startsWith("blogs/") ? stripped : `blogs/${stripped}`;
+}
+
 export default function (eleventyConfig) {
   eleventyConfig.addFilter("isoDate", (date) => {
     const d = new Date(date);
@@ -16,6 +29,13 @@ export default function (eleventyConfig) {
   // (hrefs, canonical/OG tags, sitemap) should point straight at the
   // extension-less form rather than relying on the .html -> clean redirect.
   eleventyConfig.addFilter("cleanUrl", (url) => url.replace(/\.html$/, ""));
+
+  // og:image/twitter:image/JSON-LD image need a fully-qualified absolute
+  // URL. An external heroImage URL already is one; a repo-relative one
+  // needs the site domain prefixed.
+  eleventyConfig.addFilter("heroImageUrl", (heroImage, siteUrl) =>
+    isAbsoluteUrl(heroImage) ? heroImage : `${siteUrl}/${normalizeHeroImage(heroImage)}`
+  );
 
   eleventyConfig.addPassthroughCopy("assets");
   eleventyConfig.addPassthroughCopy("blogs/src");
@@ -36,7 +56,7 @@ export default function (eleventyConfig) {
 
     const generated = collectionApi.getFilteredByTag("blogPost").map((item) => ({
       href: item.url.replace(/^\//, "").replace(/\.html$/, ""),
-      thumbnail: `blogs/${item.data.heroImage}`,
+      thumbnail: normalizeHeroImage(item.data.heroImage),
       alt: item.data.heroAlt || item.data.title,
       title: item.data.title,
       date: item.date,
