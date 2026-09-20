@@ -144,7 +144,10 @@ main pre code {
    images that use that convention, but every image gets sized sanely. */
 main img {
     max-width: 100%;
+    max-height: 420px;
+    width: auto;
     height: auto;
+    object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -159,7 +162,10 @@ main img {
 
 .image-container img {
     max-width: 100%;
+    max-height: 420px;
+    width: auto;
     height: auto;
+    object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
