@@ -30,6 +30,12 @@
         var win = window.open('/api/auth', 'test-popup', 'width=600,height=600');
         append('window.open returned: ' + (win ? 'a window object (popup opened)' : 'null (blocked)'));
       });
+      // Log every message this page receives, independent of whatever
+      // Decap CMS's own internal listener does with it - this tells us
+      // whether the popup's messages are arriving here at all.
+      window.addEventListener('message', function (e) {
+        append('message received: origin=' + e.origin + ' data=' + JSON.stringify(e.data));
+      });
     })();
   </script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
